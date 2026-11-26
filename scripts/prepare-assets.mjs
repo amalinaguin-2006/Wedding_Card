@@ -7,9 +7,11 @@ const ASSETS_DIR = path.join(ROOT, 'assets');
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const OUT_ASSETS = path.join(PUBLIC_DIR, 'assets');
 const OUT_PETALS = path.join(OUT_ASSETS, 'petals');
+const OUT_SPARKLES = path.join(OUT_ASSETS, 'sparkles');
 
 fs.mkdirSync(OUT_ASSETS, { recursive: true });
 fs.mkdirSync(OUT_PETALS, { recursive: true });
+fs.mkdirSync(OUT_SPARKLES, { recursive: true });
 
 // Skip files we explicitly decided not to use
 const SKIP_FILES = new Set([
@@ -19,6 +21,9 @@ const SKIP_FILES = new Set([
   'p10-plant-3.png',
   'p10-plant-4.png',
   'p10-plant-5.png',
+  'elephant-body.png',
+  'elephant-trunk.png',
+  'butterfly.png',
 ]);
 
 async function cleanAndConvertP10Bride(srcPath, destPath) {
@@ -42,9 +47,9 @@ async function cleanAndConvertP10Bride(srcPath, destPath) {
 }
 
 /**
- * Connected-component bounding box finder on alpha channel to crop each individual petal from petal.png
+ * Connected-component bounding box finder on alpha channel to crop individual sprites (petals or stars)
  */
-async function cropIndividualPetals(srcPath) {
+async function cropComponents(srcPath, outDir, prefix, minPixels = 80) {
   const { data, info } = await sharp(srcPath)
     .ensureAlpha()
     .raw()
@@ -61,7 +66,6 @@ async function cropIndividualPetals(srcPath) {
       const alpha = data[p * channels + 3];
       if (alpha < 15) continue;
 
-      // BFS flood-fill to find component bounds
       let minX = x, maxX = x, minY = y, maxY = y;
       let count = 0;
       const queue = [p];
@@ -91,7 +95,7 @@ async function cropIndividualPetals(srcPath) {
         }
       }
 
-      if (count > 80) {
+      if (count > minPixels) {
         boxes.push({
           left: Math.max(0, minX - 2),
           top: Math.max(0, minY - 2),
@@ -102,9 +106,11 @@ async function cropIndividualPetals(srcPath) {
     }
   }
 
-  console.log(`Found ${boxes.length} individual petals in petal.png`);
+  // Sort largest first so star-1 is the big star, etc.
+  boxes.sort((a, b) => b.width * b.height - a.width * a.height);
+  console.log(`Found ${boxes.length} ${prefix} components in ${path.basename(srcPath)}`);
   for (let i = 0; i < boxes.length; i++) {
-    const outFile = path.join(OUT_PETALS, `petal-${i + 1}.webp`);
+    const outFile = path.join(outDir, `${prefix}-${i + 1}.webp`);
     await sharp(srcPath)
       .extract(boxes[i])
       .webp({ quality: 88, alphaQuality: 95 })
@@ -125,15 +131,18 @@ async function run() {
     if (file === 'p10-bride.png') {
       await cleanAndConvertP10Bride(src, dest);
     } else if (file === 'petal.png') {
-      await cropIndividualPetals(src);
+      await cropComponents(src, OUT_PETALS, 'petal', 80);
+      await sharp(src).webp({ quality: 88, alphaQuality: 95 }).toFile(dest);
+    } else if (file === 'sparkle.png') {
+      await cropComponents(src, OUT_SPARKLES, 'star', 20);
       await sharp(src).webp({ quality: 88, alphaQuality: 95 }).toFile(dest);
     } else {
       await sharp(src).webp({ quality: 86, alphaQuality: 95 }).toFile(dest);
     }
   }
 
-  // Create favicon.webp (from butterfly.png) and og-preview.webp (from couple.png on cream bg)
-  await sharp(path.join(ASSETS_DIR, 'butterfly.png'))
+  // Create favicon.webp (from butterfly-open.png) and og-preview.webp (from couple.png on cream bg)
+  await sharp(path.join(ASSETS_DIR, 'butterfly-open.png'))
     .resize(64, 64, { fit: 'contain', background: { r: 255, g: 244, b: 228, alpha: 1 } })
     .webp({ quality: 85 })
     .toFile(path.join(PUBLIC_DIR, 'favicon.webp'));

@@ -14,8 +14,11 @@ const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)
 async function preloadFirstGroup() {
   const loader = document.getElementById('loader');
   const criticalUrls = [
-    '/assets/butterfly.webp',
-    '/assets/sparkle.webp',
+    '/assets/butterfly-open.webp',
+    '/assets/butterfly-closed.webp',
+    '/assets/sparkles/star-1.webp',
+    '/assets/sparkles/star-2.webp',
+    '/assets/sparkles/star-3.webp',
     '/assets/ornament.webp',
     '/assets/brahma.webp',
     '/assets/chakra.webp',
