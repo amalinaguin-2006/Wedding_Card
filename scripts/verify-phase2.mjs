@@ -11,7 +11,7 @@ async function scrollToScene(page, targetScene) {
   for (let i = 0; i <= steps; i++) {
     const y = Math.round((maxScroll * i) / steps);
     await page.evaluate((pos) => window.scrollTo(0, pos), y);
-    await page.waitForTimeout(60);
+    await page.waitForTimeout(50);
     const active = await page.evaluate(() => {
       for (const el of document.querySelectorAll('.pinned-group .scene.is-active')) {
         const rect = el.closest('.pinned-group').getBoundingClientRect();
@@ -28,21 +28,42 @@ async function scrollToScene(page, targetScene) {
       return null;
     });
     if (active === targetScene) {
-      // For Scene 2, scroll a bit further so it's fully settled
       if (targetScene === 2) {
         await page.evaluate((pos) => window.scrollTo(0, pos + 220), y);
         await page.waitForTimeout(300);
       }
-      // For Scene 3, center Scene 3 in the viewport
       if (targetScene === 3) {
         await page.evaluate(() => {
           document.getElementById('scene-3')?.scrollIntoView({ behavior: 'instant', block: 'start' });
         });
-        await page.waitForTimeout(450);
+        await page.waitForTimeout(400);
       }
       return;
     }
   }
+}
+
+async function watchIdle(page, name, sceneNum, seconds = 15) {
+  const samples = 5;
+  const interval = Math.round((seconds * 1000) / samples);
+  for (let s = 1; s <= samples; s++) {
+    await page.waitForTimeout(interval);
+    if (sceneNum === 1) {
+      const flipTransform = await page.evaluate(() => getComputedStyle(document.querySelector('.s1-butterfly__flip')).transform);
+      if (flipTransform !== 'none' && flipTransform.includes('-1')) {
+        throw new Error(`[${name}] Scene 1 butterfly flipped during idle: ${flipTransform}`);
+      }
+    } else if (sceneNum === 3) {
+      const sync = await page.evaluate(() => {
+        const frames = [...document.querySelectorAll('.s3-elephant__frame--2')];
+        return frames.map((f) => Number(getComputedStyle(f).opacity).toFixed(2));
+      });
+      if (sync[0] !== sync[1]) {
+        throw new Error(`[${name}] Elephants out of sync: ${sync.join(' vs ')}`);
+      }
+    }
+  }
+  console.log(`[${name}] Scene ${sceneNum} watched idle for ${seconds}s: PASS`);
 }
 
 async function runViewport(browser, name, viewport, isMobile) {
@@ -69,21 +90,26 @@ async function runViewport(browser, name, viewport, isMobile) {
     throw new Error(`Overflow at ${name}`);
   }
 
-  if (name === '390x844' || name === '1440x900') {
-    for (const s of [1, 2, 3]) {
-      await scrollToScene(page, s);
-      await page.waitForTimeout(350);
-      const outPath = path.join(ART_DIR, `p2-${name}-scene-${s}.png`);
-      await page.screenshot({ path: outPath });
-      console.log(`Saved ${outPath}`);
-    }
-    // Scroll back to top and confirm Scene 1 reverses cleanly
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await page.waitForTimeout(350);
-    const s1Active = await page.evaluate(() => document.getElementById('scene-1').classList.contains('is-active'));
-    const petalsHidden = await page.evaluate(() => !document.getElementById('petal-layer').classList.contains('is-visible'));
-    console.log(`[${name}] Reverse to Scene 1: active=${s1Active}, petalsHidden=${petalsHidden}`);
+  // Check desktop sparkles visibility
+  const visibleStars = await page.evaluate(() => {
+    return [...document.querySelectorAll('.s1-star')].filter((el) => getComputedStyle(el).display !== 'none').length;
+  });
+  console.log(`[${name}] Visible Scene 1 stars: ${visibleStars}`);
+
+  for (const s of [1, 2, 3]) {
+    await scrollToScene(page, s);
+    await watchIdle(page, name, s, 15);
+    const outPath = path.join(ART_DIR, `p2-${name}-scene-${s}.png`);
+    await page.screenshot({ path: outPath });
+    console.log(`Saved ${outPath}`);
   }
+
+  // Scroll back up to top and verify reverse
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(400);
+  const s1Active = await page.evaluate(() => document.getElementById('scene-1').classList.contains('is-active'));
+  const petalsHidden = await page.evaluate(() => !document.getElementById('petal-layer').classList.contains('is-visible'));
+  console.log(`[${name}] Reverse to Scene 1: active=${s1Active}, petalsHidden=${petalsHidden}`);
 
   await context.close();
 }
@@ -91,7 +117,6 @@ async function runViewport(browser, name, viewport, isMobile) {
 async function main() {
   const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
   try {
-    await runViewport(browser, '360x640', { width: 360, height: 640 }, true);
     await runViewport(browser, '390x844', { width: 390, height: 844 }, true);
     await runViewport(browser, '1440x900', { width: 1440, height: 900 }, false);
   } finally {

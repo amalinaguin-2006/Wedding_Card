@@ -4,12 +4,12 @@ import '../styles/scenes1to3.css';
 
 /**
  * Create individual twinkling star elements from the cropped sparkle.png sprites.
- * Places 4 groups closer around the butterfly + 5 extra small stars in varied sizes.
+ * - Core stars: 4 closer groups around the butterfly + 5 extra small stars (mobile & desktop)
+ * - Desktop-only stars (>=1024px): 12 on the left outer 25% + 12 on the right outer 25%, top to bottom
  */
 function buildSparkleStars(container) {
   if (!container) return [];
 
-  // Positions carefully placed around the butterfly (center-right) without covering it
   const starSpecs = [
     // Upper-right cluster (closer to butterfly)
     { left: '66%', top: '14%', size: 'clamp(46px, 12vw, 74px)', sprite: 1 },
@@ -40,13 +40,41 @@ function buildSparkleStars(container) {
     { left: '84%', top: '69%', size: 'clamp(15px, 3.8vw, 24px)', sprite: 4 },
     { left: '44%', top: '79%', size: 'clamp(11px, 2.9vw, 18px)', sprite: 6 },
     { left: '34%', top: '65%', size: 'clamp(13px, 3.4vw, 20px)', sprite: 5 },
+
+    // Desktop-only (>=1024px): 12 stars in outer-left 25% (top to bottom)
+    { left: '4%',  top: '8%',  size: '34px', sprite: 1, desktop: true },
+    { left: '14%', top: '12%', size: '18px', sprite: 3, desktop: true },
+    { left: '8%',  top: '22%', size: '24px', sprite: 2, desktop: true },
+    { left: '21%', top: '27%', size: '14px', sprite: 5, desktop: true },
+    { left: '5%',  top: '38%', size: '42px', sprite: 1, desktop: true },
+    { left: '16%', top: '46%', size: '20px', sprite: 4, desktop: true },
+    { left: '9%',  top: '55%', size: '15px', sprite: 6, desktop: true },
+    { left: '22%', top: '60%', size: '28px', sprite: 2, desktop: true },
+    { left: '4%',  top: '68%', size: '22px', sprite: 3, desktop: true },
+    { left: '13%', top: '78%', size: '36px', sprite: 1, desktop: true },
+    { left: '7%',  top: '87%', size: '16px', sprite: 4, desktop: true },
+    { left: '19%', top: '91%', size: '24px', sprite: 5, desktop: true },
+
+    // Desktop-only (>=1024px): 12 stars in outer-right 25% (top to bottom)
+    { left: '92%', top: '7%',  size: '28px', sprite: 2, desktop: true },
+    { left: '81%', top: '15%', size: '16px', sprite: 4, desktop: true },
+    { left: '88%', top: '24%', size: '40px', sprite: 1, desktop: true },
+    { left: '78%', top: '31%', size: '18px', sprite: 5, desktop: true },
+    { left: '94%', top: '39%', size: '22px', sprite: 3, desktop: true },
+    { left: '84%', top: '48%', size: '34px', sprite: 1, desktop: true },
+    { left: '91%', top: '57%', size: '15px', sprite: 6, desktop: true },
+    { left: '79%', top: '64%', size: '26px', sprite: 2, desktop: true },
+    { left: '93%', top: '72%', size: '38px', sprite: 1, desktop: true },
+    { left: '85%', top: '81%', size: '19px', sprite: 3, desktop: true },
+    { left: '77%', top: '88%', size: '14px', sprite: 4, desktop: true },
+    { left: '90%', top: '92%', size: '24px', sprite: 5, desktop: true },
   ];
 
   return starSpecs.map((spec) => {
     const img = document.createElement('img');
     img.src = `/assets/sparkles/star-${spec.sprite}.webp`;
     img.alt = '';
-    img.className = 's1-star';
+    img.className = spec.desktop ? 's1-star s1-star--desktop' : 's1-star';
     img.style.left = spec.left;
     img.style.top = spec.top;
     img.style.width = spec.size;
@@ -56,24 +84,68 @@ function buildSparkleStars(container) {
 }
 
 /**
- * Natural 2-frame wing flap (open <-> closed with short blend + slight horizontal squeeze at joint 34% 65%).
+ * Crisp 2-frame wing flap: very short blend (0.045s) to avoid faded double-wing ghosting,
+ * paired with a subtle horizontal squeeze around the body joint (34% 65%).
  */
-function createWingFlapTween(wingsEl, openImg, closedImg, flapHalfDur = 0.24, delay = 0) {
+function createWingFlapTween(wingsEl, openImg, closedImg, flapHalfDur = 0.25, delay = 0) {
+  const blend = 0.045;
   const tl = gsap.timeline({ repeat: -1, delay });
-  tl.to(openImg, { opacity: 0.12, duration: flapHalfDur * 0.55, ease: 'sine.in' }, 0)
-    .to(closedImg, { opacity: 1, duration: flapHalfDur * 0.55, ease: 'sine.in' }, 0)
-    .to(wingsEl, { scaleX: 0.88, duration: flapHalfDur, ease: 'sine.inOut' }, 0)
-    .to(openImg, { opacity: 1, duration: flapHalfDur * 0.65, ease: 'sine.out' }, flapHalfDur)
-    .to(closedImg, { opacity: 0, duration: flapHalfDur * 0.65, ease: 'sine.out' }, flapHalfDur)
+  tl.to(openImg, { opacity: 0, duration: blend, ease: 'none' }, flapHalfDur * 0.45)
+    .to(closedImg, { opacity: 1, duration: blend, ease: 'none' }, flapHalfDur * 0.45)
+    .to(wingsEl, { scaleX: 0.90, duration: flapHalfDur, ease: 'sine.inOut' }, 0)
+    .to(openImg, { opacity: 1, duration: blend, ease: 'none' }, flapHalfDur * 1.45)
+    .to(closedImg, { opacity: 0, duration: blend, ease: 'none' }, flapHalfDur * 1.45)
     .to(wingsEl, { scaleX: 1, duration: flapHalfDur, ease: 'sine.inOut' }, flapHalfDur);
   return tl;
 }
 
 /**
+ * Smooth, wandering curved flight for Scene 2 small butterflies.
+ * Uses gentle horizontal + vertical drift with slight tilt in travel direction,
+ * and faces the direction of travel (left = 1, right = -1), changing direction rarely & smoothly.
+ */
+function createWanderingFlight(bfEl, flipEl, cfg) {
+  const { dx, dy, dur, startRight } = cfg;
+  const startScaleX = startRight ? -1 : 1;
+  const endScaleX = -startScaleX;
+
+  gsap.set(flipEl, { scaleX: startScaleX });
+
+  const tl = gsap.timeline({ repeat: -1, delay: cfg.delay });
+
+  // Half 1: glide along a curved arc in starting direction
+  tl.to(bfEl, {
+    x: dx,
+    y: dy,
+    rotation: startRight ? 6 : -6,
+    duration: dur,
+    ease: 'sine.inOut',
+  })
+    // Smooth, rare turn at the far end of the arc
+    .to(flipEl, { scaleX: endScaleX, duration: 0.45, ease: 'sine.inOut' }, dur - 0.25)
+    // Half 2: glide back along a slightly different vertical curve
+    .to(bfEl, {
+      x: 0,
+      y: dy * 0.35,
+      rotation: startRight ? -5 : 5,
+      duration: dur * 0.9,
+      ease: 'sine.inOut',
+    })
+    .to(bfEl, {
+      y: 0,
+      rotation: 0,
+      duration: dur * 0.4,
+      ease: 'sine.inOut',
+    })
+    .to(flipEl, { scaleX: startScaleX, duration: 0.45, ease: 'sine.inOut' }, `-=0.35`);
+
+  return tl;
+}
+
+/**
  * Group [1–2]:
- * - Scene 1: 2-frame flapping butterfly along curved path + independent twinkling stars
- * - Scroll: butterfly flies across & stars burst to reveal Scene 2
- * - Scene 2: Brahma (no old halo) + single rotating chakra centered on middle face + 5 varied butterflies
+ * - Scene 1: Butterfly always faces left, flaps & floats gently in place; on scroll flies upper-left & bursts
+ * - Scene 2: Brahma (100% opacity) + single softened chakra (45% opacity) + 5 wandering butterflies
  */
 export function initScenes1to2(petals, prefersReducedMotion) {
   const group12 = document.getElementById('group-1-2');
@@ -85,7 +157,6 @@ export function initScenes1to2(petals, prefersReducedMotion) {
   const s1Stars = buildSparkleStars(sparklesContainer);
 
   const s1Wrap = scene1.querySelector('.s1-butterfly-wrap');
-  const s1Flip = scene1.querySelector('.s1-butterfly__flip');
   const s1Wings = scene1.querySelector('.s1-butterfly__wings');
   const s1Open = scene1.querySelector('.s1-butterfly__img--open');
   const s1Closed = scene1.querySelector('.s1-butterfly__img--closed');
@@ -96,54 +167,38 @@ export function initScenes1to2(petals, prefersReducedMotion) {
   const ambientTweens = [];
 
   if (!prefersReducedMotion) {
-    // Main butterfly: natural 2-frame flap + curved flight path (mirroring when moving right)
+    // Scene 1 butterfly: ALWAYS faces left, gentle in-place float & small tilt + crisp 2-frame flap
     if (s1Wings && s1Open && s1Closed) {
-      ambientTweens.push(createWingFlapTween(s1Wings, s1Open, s1Closed, 0.28, 0));
+      ambientTweens.push(createWingFlapTween(s1Wings, s1Open, s1Closed, 0.26, 0));
     }
-    if (s1Wrap && s1Flip) {
-      // Curved gentle hover/flight: glides left-up, arcs back right-down (mirrors right on return)
-      const flightTl = gsap.timeline({ repeat: -1 });
-      flightTl
-        .to(s1Wrap, {
-          x: '-=18',
-          y: -16,
-          rotation: -5,
-          duration: 2.2,
+    if (s1Wrap) {
+      ambientTweens.push(
+        gsap.to(s1Wrap, {
+          y: -14,
+          rotation: -3,
+          duration: 2.6,
           ease: 'sine.inOut',
+          yoyo: true,
+          repeat: -1,
         })
-        .to(s1Flip, { scaleX: -1, duration: 0.25, ease: 'power1.inOut' }, 2.1)
-        .to(s1Wrap, {
-          x: '+=24',
-          y: -6,
-          rotation: 4,
-          duration: 2.1,
-          ease: 'sine.inOut',
-        })
-        .to(s1Flip, { scaleX: 1, duration: 0.25, ease: 'power1.inOut' }, 4.2)
-        .to(s1Wrap, {
-          x: '-=6',
-          y: 0,
-          rotation: 0,
-          duration: 1.5,
-          ease: 'sine.inOut',
-        });
-      ambientTweens.push(flightTl);
+      );
     }
 
-    // Every individual star twinkles with its own random delay and duration (1.2–3.0s)
+    // Every individual star twinkles independently (1.2–3.0s, random delay, varied opacity)
     s1Stars.forEach((star) => {
       const dur = gsap.utils.random(1.2, 3.0);
-      const delay = gsap.utils.random(0, 2.6);
-      const minScale = gsap.utils.random(0.65, 0.82);
-      const maxScale = gsap.utils.random(1.08, 1.28);
-      const minOp = gsap.utils.random(0.25, 0.45);
+      const delay = gsap.utils.random(0, 2.8);
+      const minScale = gsap.utils.random(0.65, 0.84);
+      const maxScale = gsap.utils.random(1.06, 1.24);
+      const minOp = gsap.utils.random(0.18, 0.42);
+      const maxOp = gsap.utils.random(0.75, 1.0);
       ambientTweens.push(
         gsap.fromTo(
           star,
           { scale: minScale, opacity: minOp },
           {
             scale: maxScale,
-            opacity: 1,
+            opacity: maxOp,
             duration: dur,
             delay,
             ease: 'sine.inOut',
@@ -166,33 +221,24 @@ export function initScenes1to2(petals, prefersReducedMotion) {
       );
     }
 
-    // Scene 2 small butterflies: varied sizes, drift speeds, and flap timings
+    // Scene 2 small butterflies: slow, wandering curved flight + varied flap timings
     const s2Configs = [
-      { dx: 14, dy: -14, rot: 7, driftDur: 3.1, flapHalf: 0.22, delay: 0.0 },
-      { dx: -12, dy: -16, rot: -6, driftDur: 3.8, flapHalf: 0.27, delay: 0.3 },
-      { dx: 10, dy: -11, rot: 5, driftDur: 2.7, flapHalf: 0.19, delay: 0.7 },
-      { dx: 15, dy: -13, rot: 8, driftDur: 4.1, flapHalf: 0.25, delay: 0.4 },
-      { dx: -16, dy: -15, rot: -7, driftDur: 3.4, flapHalf: 0.30, delay: 0.15 },
+      { dx: 34,  dy: 22,  dur: 6.5, flapHalf: 0.22, delay: 0.0, startRight: true },
+      { dx: -32, dy: 26,  dur: 7.4, flapHalf: 0.27, delay: 0.8, startRight: false },
+      { dx: 28,  dy: -18, dur: 5.8, flapHalf: 0.19, delay: 1.5, startRight: true },
+      { dx: 36,  dy: -22, dur: 7.0, flapHalf: 0.25, delay: 0.4, startRight: true },
+      { dx: -40, dy: -24, dur: 6.2, flapHalf: 0.30, delay: 1.1, startRight: false },
     ];
     s2Butterflies.forEach((bf, i) => {
       const cfg = s2Configs[i % s2Configs.length];
+      const flip = bf.querySelector('.s2-butterfly__flip');
       const wings = bf.querySelector('.s2-butterfly__wings');
       const openImg = bf.querySelector('.s2-butterfly__img--open');
       const closedImg = bf.querySelector('.s2-butterfly__img--closed');
 
-      ambientTweens.push(
-        gsap.to(bf, {
-          x: cfg.dx,
-          y: cfg.dy,
-          rotation: cfg.rot,
-          duration: cfg.driftDur,
-          delay: cfg.delay,
-          ease: 'sine.inOut',
-          yoyo: true,
-          repeat: -1,
-        })
-      );
-
+      if (flip) {
+        ambientTweens.push(createWanderingFlight(bf, flip, cfg));
+      }
       if (wings && openImg && closedImg) {
         ambientTweens.push(createWingFlapTween(wings, openImg, closedImg, cfg.flapHalf, cfg.delay));
       }
@@ -231,14 +277,15 @@ export function initScenes1to2(petals, prefersReducedMotion) {
       .to(scene2, { autoAlpha: 1, duration: 0.35 }, 0.25)
       .to({}, { duration: 0.45 });
   } else {
+    // On scroll, butterfly flies toward upper-left while facing left, then bursts into sparkles
     tl.to({}, { duration: 0.12 })
       .to(
         s1Wrap,
         {
-          x: '-38vw',
+          x: '-36vw',
           y: '-28vh',
           scale: 0.45,
-          rotation: -18,
+          rotation: -14,
           autoAlpha: 0,
           duration: 0.32,
           ease: 'power2.inOut',
@@ -250,7 +297,7 @@ export function initScenes1to2(petals, prefersReducedMotion) {
         {
           scale: 1.9,
           autoAlpha: 0,
-          stagger: 0.015,
+          stagger: 0.01,
           duration: 0.3,
           ease: 'power2.out',
         },
@@ -270,7 +317,7 @@ export function initScenes1to2(petals, prefersReducedMotion) {
 /**
  * Scene 3:
  * - Sequential betel-leaf date reveal scrubbed by scroll
- * - Two-frame elephants (elephant-1 -> quick cross-fade to elephant-2 with slight upward tilt -> hold -> return)
+ * - Both elephants driven by ONE shared timeline (no delay or offset)
  */
 export function initScene3(petals, prefersReducedMotion) {
   const scene3 = document.getElementById('scene-3');
@@ -280,35 +327,24 @@ export function initScene3(petals, prefersReducedMotion) {
   const salutation = scene3.querySelector('.s3-salutation-wrap');
   const leaves = scene3.querySelectorAll('.s3-leaf');
   const weekday = scene3.querySelector('.s3-weekday');
-  const elephants = scene3.querySelectorAll('.s3-elephant');
 
-  const elephantTweens = [];
-  if (!prefersReducedMotion) {
-    elephants.forEach((el, i) => {
-      const tilt = el.querySelector('.s3-elephant__tilt');
-      const f1 = el.querySelector('.s3-elephant__frame--1');
-      const f2 = el.querySelector('.s3-elephant__frame--2');
-      if (!tilt || !f1 || !f2) return;
+  const tilts = scene3.querySelectorAll('.s3-elephant__tilt');
+  const f1All = scene3.querySelectorAll('.s3-elephant__frame--1');
+  const f2All = scene3.querySelectorAll('.s3-elephant__frame--2');
 
-      const loop = gsap.timeline({
-        repeat: -1,
-        delay: i === 1 ? 1.15 : 0, // slight timing offset for the mirrored side
-      });
-
-      // Frame 1 for 1.8s -> 0.15s cross-fade to frame 2 + slight upward tilt -> hold 0.8s -> 0.15s return
-      loop
-        .to({}, { duration: 1.8 })
-        .to(f1, { opacity: 0, duration: 0.15, ease: 'none' }, 1.8)
-        .to(f2, { opacity: 1, duration: 0.15, ease: 'none' }, 1.8)
-        .to(tilt, { rotation: 2.5, duration: 0.18, ease: 'sine.out' }, 1.8)
-        .to({}, { duration: 0.8 })
-        .to(f1, { opacity: 1, duration: 0.15, ease: 'none' }, 2.75)
-        .to(f2, { opacity: 0, duration: 0.15, ease: 'none' }, 2.75)
-        .to(tilt, { rotation: 0, duration: 0.2, ease: 'sine.inOut' }, 2.75);
-
-      loop.pause();
-      elephantTweens.push(loop);
-    });
+  let sharedElephantLoop = null;
+  if (!prefersReducedMotion && tilts.length && f1All.length && f2All.length) {
+    sharedElephantLoop = gsap.timeline({ repeat: -1 });
+    sharedElephantLoop
+      .to({}, { duration: 1.8 })
+      .to(f1All, { opacity: 0, duration: 0.15, ease: 'none' }, 1.8)
+      .to(f2All, { opacity: 1, duration: 0.15, ease: 'none' }, 1.8)
+      .to(tilts, { rotation: 2.5, duration: 0.18, ease: 'sine.out' }, 1.8)
+      .to({}, { duration: 0.8 })
+      .to(f1All, { opacity: 1, duration: 0.15, ease: 'none' }, 2.75)
+      .to(f2All, { opacity: 0, duration: 0.15, ease: 'none' }, 2.75)
+      .to(tilts, { rotation: 0, duration: 0.2, ease: 'sine.inOut' }, 2.75);
+    sharedElephantLoop.pause();
   }
 
   ScrollTrigger.create({
@@ -317,7 +353,9 @@ export function initScene3(petals, prefersReducedMotion) {
     end: 'bottom 50%',
     onToggle: (self) => {
       if (self.isActive) petals?.setVisible(true);
-      elephantTweens.forEach((t) => (self.isActive ? t.play() : t.pause()));
+      if (sharedElephantLoop) {
+        self.isActive ? sharedElephantLoop.play() : sharedElephantLoop.pause();
+      }
     },
   });
 
