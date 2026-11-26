@@ -2,6 +2,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './styles/main.css';
 import { CONFIG } from './config.js';
+import { initScenes1to2, initScene3 } from './scenes/scenes1to3.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -135,27 +136,12 @@ function activateSceneInGroup(groupEl, sceneNumber) {
  * - Normal section [14]
  */
 function initScrollStructure(petals) {
-  const group12 = document.getElementById('group-1-2');
   const group49 = document.getElementById('group-4-9');
   const group1213 = document.getElementById('group-12-13');
 
-  // Group [1–2]
-  if (group12) {
-    ScrollTrigger.create({
-      trigger: group12,
-      start: 'top top',
-      end: '+=160%',
-      pin: true,
-      scrub: true,
-      onUpdate: (self) => {
-        const active = self.progress < 0.5 ? 1 : 2;
-        activateSceneInGroup(group12, active);
-      },
-      onToggle: (self) => {
-        if (self.isActive) petals?.setVisible(false);
-      },
-    });
-  }
+  // Scenes 1–2 (pinned group) & Scene 3 (normal section)
+  initScenes1to2(petals, prefersReducedMotion);
+  initScene3(petals, prefersReducedMotion);
 
   // Group [4–9]
   if (group49) {
@@ -198,7 +184,8 @@ function initScrollStructure(petals) {
   }
 
   // Normal sections petal visibility triggers (exact 50% viewport boundary, zero overlap)
-  document.querySelectorAll('.section-scene').forEach((section) => {
+  // Note: #scene-3 manages its own petal & trunk trigger inside initScene3()
+  document.querySelectorAll('.section-scene:not(#scene-3)').forEach((section) => {
     const hasPetals = section.dataset.petals === 'true';
     ScrollTrigger.create({
       trigger: section,

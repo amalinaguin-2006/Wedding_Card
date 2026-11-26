@@ -1,0 +1,402 @@
+/* ==========================================================================
+   Scene 1: Entrance Butterfly & Sparkles
+   ========================================================================== */
+.scene1-stage {
+  position: relative;
+  overflow: visible;
+}
+
+.s1-butterfly {
+  position: relative;
+  z-index: 2;
+  width: clamp(230px, 66vw, 390px);
+  height: auto;
+  transform: translate(8%, 6%);
+  will-change: transform, opacity;
+  user-select: none;
+  pointer-events: none;
+}
+
+.s1-sparkle {
+  position: absolute;
+  z-index: 1;
+  height: auto;
+  will-change: transform, opacity;
+  user-select: none;
+  pointer-events: none;
+}
+
+.s1-sparkle--tl {
+  top: 7%;
+  left: 7%;
+  width: clamp(46px, 13vw, 76px);
+}
+
+.s1-sparkle--tr {
+  top: 4%;
+  right: 4%;
+  width: clamp(115px, 32vw, 185px);
+}
+
+.s1-sparkle--ml {
+  top: 34%;
+  left: 22%;
+  width: clamp(30px, 8.5vw, 50px);
+}
+
+.s1-sparkle--bl {
+  bottom: 9%;
+  left: 7%;
+  width: clamp(78px, 22vw, 132px);
+}
+
+@media (min-width: 1024px) {
+  .s1-butterfly {
+    width: clamp(300px, 28vw, 420px);
+    transform: translate(12%, 4%);
+  }
+  .s1-sparkle--tl {
+    top: 10%;
+    left: 14%;
+  }
+  .s1-sparkle--tr {
+    top: 6%;
+    right: 12%;
+    width: clamp(140px, 14vw, 195px);
+  }
+  .s1-sparkle--ml {
+    top: 36%;
+    left: 26%;
+  }
+  .s1-sparkle--bl {
+    bottom: 12%;
+    left: 16%;
+  }
+}
+
+/* ==========================================================================
+   Scene 2: Brahma, Rotating Chakra Halo, Ornaments & Small Butterflies
+   ========================================================================== */
+.scene2-stage {
+  justify-content: center;
+  gap: clamp(0.6rem, 2vh, 1.25rem);
+}
+
+.s2-ornament {
+  width: clamp(210px, 56vw, 340px);
+  height: auto;
+  user-select: none;
+  pointer-events: none;
+}
+
+.s2-ornament--bottom {
+  transform: scaleY(-1);
+}
+
+.s2-deity-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(175px, 44vw, 250px);
+  margin: 0.25rem 0;
+}
+
+.s2-chakra {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64%;
+  height: auto;
+  opacity: 0.85;
+  z-index: 1;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.s2-brahma {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.s2-mantra {
+  font-family: var(--font-bengali);
+  font-size: clamp(1.5rem, 6.2vw, 2.35rem);
+  font-weight: 600;
+  color: var(--heading-red);
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+
+.s2-butterfly {
+  position: absolute;
+  height: auto;
+  opacity: 0.78;
+  will-change: transform;
+  pointer-events: none;
+  user-select: none;
+}
+
+.s2-butterfly--1 {
+  top: 12%;
+  left: 9%;
+  width: clamp(34px, 9.5vw, 56px);
+  transform: rotate(12deg);
+}
+
+.s2-butterfly--2 {
+  top: 18%;
+  right: 16%;
+  width: clamp(24px, 6.5vw, 40px);
+  transform: scaleX(-1) rotate(18deg);
+}
+
+.s2-butterfly--3 {
+  top: 36%;
+  left: 11%;
+  width: clamp(24px, 6.5vw, 40px);
+  transform: rotate(-15deg);
+}
+
+.s2-butterfly--4 {
+  bottom: 28%;
+  left: 9%;
+  width: clamp(36px, 10vw, 58px);
+  transform: rotate(8deg);
+}
+
+.s2-butterfly--5 {
+  bottom: 18%;
+  right: 18%;
+  width: clamp(64px, 18vw, 105px);
+  transform: scaleX(-1) rotate(-8deg);
+}
+
+@media (min-width: 1024px) {
+  .s2-ornament {
+    width: 340px;
+  }
+  .s2-deity-wrap {
+    width: 240px;
+  }
+  .s2-mantra {
+    font-size: 2.4rem;
+  }
+  .s2-butterfly--1 {
+    left: 14%;
+  }
+  .s2-butterfly--2 {
+    right: 18%;
+  }
+  .s2-butterfly--3 {
+    left: 18%;
+  }
+  .s2-butterfly--4 {
+    left: 14%;
+  }
+  .s2-butterfly--5 {
+    right: 16%;
+  }
+}
+
+/* ==========================================================================
+   Scene 3: Date Invitation, Betel Leaves & Trumpeting Elephants
+   ========================================================================== */
+.scene--3 {
+  padding-top: 0.5rem;
+  padding-bottom: 0;
+}
+
+.scene3-stage {
+  min-height: 100svh;
+  justify-content: space-between;
+  padding-top: clamp(1rem, 3svh, 2rem);
+  padding-bottom: 0;
+  gap: clamp(0.45rem, 1.4svh, 1rem);
+}
+
+.s3-ornament {
+  width: clamp(210px, 62vw, 350px);
+  height: auto;
+  /* Golden-orange tint matching reference/page-03.png */
+  filter: brightness(1.85) sepia(0.95) saturate(3.2) hue-rotate(4deg);
+  pointer-events: none;
+  user-select: none;
+}
+
+.s3-salutation-wrap {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+  padding: 0 0.5rem;
+}
+
+.s3-salutation {
+  display: inline-block;
+  background-color: var(--panel-pink);
+  color: var(--heading-red);
+  font-family: var(--font-bengali);
+  font-size: clamp(1.15rem, 4.6vw, 1.55rem);
+  font-weight: 600;
+  padding: 0.35rem 1.05rem;
+  border-radius: 16px;
+}
+
+.s3-upcoming {
+  color: var(--heading-red);
+  font-family: var(--font-bengali);
+  font-size: clamp(1.25rem, 5vw, 1.65rem);
+  font-weight: 600;
+  padding-left: 0.4rem;
+}
+
+.s3-leaves-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.5rem, 1.4svh, 0.9rem);
+  width: 100%;
+}
+
+.s3-leaves-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.5rem, 2.5vw, 1.5rem);
+  width: 100%;
+}
+
+.s3-leaf {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, opacity;
+}
+
+.s3-leaf--large {
+  width: clamp(92px, 27vw, 150px);
+}
+
+.s3-leaf--small {
+  width: clamp(66px, 19.5vw, 110px);
+}
+
+.s3-leaf__img {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+.s3-leaf__text {
+  position: absolute;
+  top: 53%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  font-weight: 700;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.s3-leaf__text--en {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: clamp(1.55rem, 5.8vw, 2.35rem);
+  letter-spacing: 0.01em;
+}
+
+.s3-leaf__text--bn {
+  font-family: var(--font-bengali);
+  font-size: clamp(1.05rem, 4vw, 1.55rem);
+}
+
+.s3-weekday {
+  font-family: var(--font-bengali);
+  font-size: clamp(2.25rem, 9.5vw, 3.5rem);
+  font-weight: 700;
+  color: var(--heading-red);
+  text-shadow: 2px 3px 0 rgba(85, 0, 0, 0.16);
+  line-height: 1.15;
+}
+
+.s3-elephants {
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 0.25rem;
+}
+
+.s3-elephant {
+  position: relative;
+  width: clamp(128px, 34vw, 195px);
+  aspect-ratio: 328 / 272;
+  flex-shrink: 0;
+}
+
+.s3-elephant--left {
+  transform: scaleX(-1);
+}
+
+.s3-elephant__body,
+.s3-elephant__trunk {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Hide the baked-in trunk on the body layer using a code mask */
+.s3-elephant__body {
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% 100%,
+    0% 100%,
+    0% 85%,
+    23% 85%,
+    23% 43%,
+    0% 45%
+  );
+}
+
+/* Isolate the exact trunk region and rotate from where it joins the head */
+.s3-elephant__trunk {
+  clip-path: polygon(0% 42%, 24% 39%, 23% 85%, 0% 85%);
+  transform-origin: 14% 43%;
+  will-change: transform;
+}
+
+@media (min-width: 1024px) {
+  .s3-salutation-wrap {
+    max-width: 720px;
+    align-items: center;
+    text-align: center;
+  }
+  .s3-upcoming {
+    padding-left: 0;
+  }
+  .s3-leaves-row--large {
+    gap: 2.25rem;
+  }
+  .s3-leaves-row--small {
+    gap: 1.75rem;
+  }
+  .s3-elephant {
+    width: 210px;
+  }
+}
