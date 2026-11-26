@@ -214,9 +214,11 @@ body {
 }
 
 .placeholder-box h2 {
-  font-size: clamp(1.35rem, 4.5vw, 2.25rem);
+  font-size: clamp(1.2rem, 4.5vw, 2.25rem);
   color: var(--heading-red);
   font-weight: 700;
+  max-width: 100%;
+  overflow-wrap: break-word;
 }
 
 .placeholder-box p {
