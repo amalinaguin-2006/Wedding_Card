@@ -1,0 +1,15 @@
+butterfly.png, sparkle.png, ornament.png
+brahma.png, chakra.png (optional)
+petal-1.png, petal-2.png, petal-3.png
+betel-leaf.png
+elephant-body.png, elephant-trunk.png
+father-groom.png, mother-groom.png, groom.png, family-groom.png
+father-bride.png, mother-bride.png, bride.png, family-bride.png
+leaf-cover-front.png, leaf-cover-back.png
+topor.png, mukut.png
+cloth-red.png, cloth-white.png, knot.png
+p10-background.png (wall + window), p10-bride-body.png, p10-bride-hair.png
+p10-groom-bike.png, p10-groom-bike-lookup.png, p10-plant-1.png, p10-plant-2.png ...
+scroll-paper.png, scroll-roller-left.png, scroll-roller-right.png, divider.png
+house.png (page 12 without any text), map.png
+couple.png

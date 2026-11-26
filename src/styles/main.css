@@ -1,0 +1,246 @@
+:root {
+  --bg-cream: #FFF4E4;
+  --text-main: #550000;
+  --heading-red: #A80000;
+  --panel-pink: rgba(255, 208, 210, 0.85);
+  --panel-border: #5C1414;
+
+  --font-bengali: 'Noto Serif Bengali', serif;
+  --font-english: 'Cormorant Garamond', Georgia, serif;
+  --font-hand: 'Caveat', cursive;
+
+  --stage-max-h: 920px;
+  --mobile-max-w: 480px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  background-color: var(--bg-cream);
+  color: var(--text-main);
+  font-family: var(--font-bengali);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--bg-cream);
+  color: var(--text-main);
+  min-height: 100svh;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* Loader */
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-cream);
+  transition: opacity 0.45s ease, visibility 0.45s ease;
+}
+
+.loader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.loader__ring {
+  width: 38px;
+  height: 38px;
+  border: 3px solid rgba(168, 0, 0, 0.18);
+  border-top-color: var(--heading-red);
+  border-radius: 50%;
+  animation: loaderSpin 0.9s linear infinite;
+}
+
+.loader__text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--heading-red);
+}
+
+@keyframes loaderSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Shared Petal Layer */
+.petal-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.petal-layer.is-visible {
+  opacity: 1;
+}
+
+.petal-item {
+  position: absolute;
+  top: -12vh;
+  left: 0;
+  will-change: transform, opacity;
+  opacity: 0.72;
+  user-select: none;
+}
+
+/* Main App & Scene Layout */
+.app {
+  position: relative;
+  width: 100%;
+}
+
+.pinned-group {
+  position: relative;
+  width: 100%;
+}
+
+.pinned-stage {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.section-scene {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Scenes inside a pinned stage stack on top of each other */
+.pinned-stage .scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.pinned-stage .scene.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Inner 9:16 mobile composition / wide desktop container */
+.scene__inner {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  max-width: var(--mobile-max-w);
+  max-height: 100svh;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .scene__inner {
+    max-width: 1120px;
+    max-height: var(--stage-max-h);
+    padding: 2.5rem 3rem;
+  }
+}
+
+/* Scene-specific background overrides */
+.scene--10 {
+  background-color: #824b33;
+  color: #FFF4E4;
+}
+
+.scene--12,
+.scene--13,
+.pinned-group--12-13 {
+  background-color: #bfe4f4;
+}
+
+/* Placeholder styling for Phase 1 */
+.placeholder-box {
+  gap: 0.75rem;
+}
+
+.placeholder-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background-color: var(--panel-pink);
+  border: 1px solid var(--panel-border);
+  color: var(--text-main);
+  font-family: var(--font-english);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.placeholder-box h2 {
+  font-size: clamp(1.35rem, 4.5vw, 2.25rem);
+  color: var(--heading-red);
+  font-weight: 700;
+}
+
+.placeholder-box p {
+  font-family: var(--font-english);
+  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+  color: var(--text-main);
+  opacity: 0.85;
+}
+
+.placeholder-box--dark h2,
+.placeholder-box--dark p {
+  color: #FFF4E4;
+}
+
+.placeholder-box--house {
+  background: rgba(255, 244, 228, 0.45);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .loader__ring {
+    animation: none;
+  }
+  .petal-layer {
+    display: none;
+  }
+}
