@@ -1,11 +1,12 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import '../styles/scenes4to6.css';
+import '../styles/scenes7to9.css';
 
 /**
  * Pinned Group [4–9]:
- * - Phase 3 implements Scenes 4, 5, and 6
- * - Scenes 7, 8, and 9 remain placeholders until Phase 4
+ * - Phase 3: Scenes 4, 5, 6
+ * - Phase 4: Scenes 7, 8, 9
  */
 export function initScenes4to9(petals, prefersReducedMotion) {
   const group49 = document.getElementById('group-4-9');
@@ -76,6 +77,20 @@ export function initScenes4to9(petals, prefersReducedMotion) {
   const s6MotherName = scene6.querySelector('.s6-mother-name');
   const s6Only = scene6.querySelector('.s6-only');
   const s6Role = scene6.querySelector('.s6-role');
+
+  // Scene 7 & 8 elements
+  const s7Bride = scene7.querySelector('.s78-bride-wrap');
+  const s7LeafBack = scene7.querySelector('.s7-leaf--back');
+  const s7LeafFront = scene7.querySelector('.s7-leaf--front');
+  const s8Name = scene7.querySelector('.s8-bride-name');
+
+  // Scene 9 elements
+  const s9ClothRed = scene9.querySelector('.s9-cloth--red');
+  const s9ClothWhite = scene9.querySelector('.s9-cloth--white');
+  const s9Knot = scene9.querySelector('.s9-knot');
+  const s9Heading = scene9.querySelector('.s9-heading');
+  const s9Families = scene9.querySelectorAll('.s9-groom-family, .s9-bride-family');
+  const s9Boxes = scene9.querySelectorAll('.s9-box-wrap');
 
   // Compute upper-left target position for familyCorner (relative to center of pinned-stage)
   const getCornerTarget = () => {
@@ -164,13 +179,58 @@ export function initScenes4to9(petals, prefersReducedMotion) {
     .to({}, { duration: 0.55 }, 4.40)
     .to([scene6, familyCorner], { autoAlpha: 0, duration: 0.22 }, 4.95);
 
-  // --- SCENES 7–9 Placeholders (5.2 -> 9.6, replaced in Phase 4) ---
-  tl.to(scene7, { autoAlpha: 1, duration: 0.2 }, 5.20)
-    .to({}, { duration: 1.1 }, 5.40)
-    .to(scene7, { autoAlpha: 0, duration: 0.2 }, 6.50)
-    .to(scene8, { autoAlpha: 1, duration: 0.2 }, 6.70)
-    .to({}, { duration: 1.1 }, 6.90)
-    .to(scene8, { autoAlpha: 0, duration: 0.2 }, 8.00)
-    .to(scene9, { autoAlpha: 1, duration: 0.2 }, 8.20)
-    .to({}, { duration: 1.2 }, 8.40);
+  // --- SCENES 7 & 8: Leaf Reveal & Bride Name (5.2 -> 7.6) ---
+  tl.set(scene7, { autoAlpha: 1 }, 5.18)
+    .set(s8Name, { autoAlpha: 0, y: 16 }, 5.18)
+    .from(s7Bride, { scale: 0.72, autoAlpha: 0, duration: 0.35, ease: 'power2.out' }, 5.22)
+    .from([s7LeafBack, s7LeafFront], { autoAlpha: 0, scale: 0.86, duration: 0.25 }, 5.25)
+    // Hold Scene 7 (face covered by two betel leaves)
+    .to({}, { duration: 0.50 }, 5.58)
+    // Scene 8: back leaf moves left, front leaf moves right, bride grows slightly, name appears
+    .to(s7LeafBack, { x: '-115vw', rotation: -24, autoAlpha: 0, duration: 0.42, ease: 'power2.inOut' }, 6.10)
+    .to(s7LeafFront, { x: '115vw', rotation: 24, autoAlpha: 0, duration: 0.42, ease: 'power2.inOut' }, 6.10)
+    .to(s7Bride, { scale: 1.07, duration: 0.42, ease: 'power1.out' }, 6.15)
+    .to(s8Name, { autoAlpha: 1, y: 0, duration: 0.25, ease: 'power2.out' }, 6.45)
+    // Hold Scene 8
+    .to({}, { duration: 0.55 }, 6.72)
+    .to(scene7, { autoAlpha: 0, duration: 0.22 }, 7.30);
+
+  // --- SCENE 9: Cloth Knot, Heading & Family Boxes (7.5 -> 9.8) ---
+  tl.set(scene9, { autoAlpha: 1 }, 7.50)
+    .set([s9Knot, s9Heading, ...s9Families, ...s9Boxes], { autoAlpha: 0 }, 7.50)
+    .fromTo(
+      s9ClothRed,
+      { x: '-65vw', autoAlpha: 0 },
+      { x: '-12%', autoAlpha: 1, duration: 0.42, ease: 'power2.out' },
+      7.55
+    )
+    .fromTo(
+      s9ClothWhite,
+      { x: '65vw', autoAlpha: 0 },
+      { x: '12%', autoAlpha: 1, duration: 0.42, ease: 'power2.out' },
+      7.55
+    )
+    // Meet at center -> cross-fade to knot
+    .to([s9ClothRed, s9ClothWhite], { x: 0, autoAlpha: 0, duration: 0.18, ease: 'power1.in' }, 7.98)
+    .fromTo(
+      s9Knot,
+      { scale: 0.85, autoAlpha: 0 },
+      { scale: 1, autoAlpha: 1, duration: 0.22, ease: 'back.out(1.4)' },
+      8.02
+    )
+    .fromTo(s9Heading, { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.2 }, 8.22)
+    .fromTo(
+      s9Families,
+      { y: 16, autoAlpha: 0 },
+      { y: 0, autoAlpha: 1, stagger: 0.08, duration: 0.24, ease: 'power2.out' },
+      8.40
+    )
+    .fromTo(
+      s9Boxes,
+      { y: 18, autoAlpha: 0 },
+      { y: 0, autoAlpha: 1, stagger: 0.1, duration: 0.26, ease: 'power2.out' },
+      8.52
+    )
+    // Hold Scene 9 to read both boxes
+    .to({}, { duration: 1.0 }, 8.80);
 }
