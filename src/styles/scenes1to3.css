@@ -87,6 +87,8 @@
 }
 
 .s2-ornament {
+  position: relative;
+  z-index: 2;
   width: clamp(210px, 56vw, 340px);
   height: auto;
   user-select: none;
@@ -99,6 +101,7 @@
 
 .s2-deity-wrap {
   position: relative;
+  z-index: 2;
   display: inline-block;
   width: clamp(185px, 46vw, 255px);
   margin: 0.25rem 0;
@@ -137,6 +140,8 @@
 }
 
 .s2-mantra {
+  position: relative;
+  z-index: 2;
   font-family: var(--font-bengali);
   font-size: clamp(1.5rem, 6.2vw, 2.35rem);
   font-weight: 600;
@@ -145,10 +150,20 @@
   letter-spacing: 0.01em;
 }
 
+.s2-butterflies {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
 .s2-butterfly {
   position: absolute;
+  top: 0;
+  left: 0;
   aspect-ratio: 1 / 1;
-  opacity: 0.8;
+  opacity: 0.78;
   will-change: transform;
   pointer-events: none;
   user-select: none;
@@ -180,36 +195,6 @@
   opacity: 0;
 }
 
-.s2-butterfly--1 {
-  top: 12%;
-  left: 9%;
-  width: clamp(36px, 10vw, 58px);
-}
-
-.s2-butterfly--2 {
-  top: 18%;
-  right: 15%;
-  width: clamp(26px, 7vw, 42px);
-}
-
-.s2-butterfly--3 {
-  top: 36%;
-  left: 11%;
-  width: clamp(26px, 7vw, 42px);
-}
-
-.s2-butterfly--4 {
-  bottom: 28%;
-  left: 9%;
-  width: clamp(38px, 10.5vw, 60px);
-}
-
-.s2-butterfly--5 {
-  bottom: 18%;
-  right: 17%;
-  width: clamp(66px, 18vw, 106px);
-}
-
 @media (min-width: 1024px) {
   .s2-ornament {
     width: 340px;
@@ -219,21 +204,6 @@
   }
   .s2-mantra {
     font-size: 2.4rem;
-  }
-  .s2-butterfly--1 {
-    left: 14%;
-  }
-  .s2-butterfly--2 {
-    right: 18%;
-  }
-  .s2-butterfly--3 {
-    left: 18%;
-  }
-  .s2-butterfly--4 {
-    left: 14%;
-  }
-  .s2-butterfly--5 {
-    right: 16%;
   }
 }
 

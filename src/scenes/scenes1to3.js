@@ -100,46 +100,124 @@ function createWingFlapTween(wingsEl, openImg, closedImg, flapHalfDur = 0.25, de
 }
 
 /**
- * Smooth, wandering curved flight for Scene 2 small butterflies.
- * Uses gentle horizontal + vertical drift with slight tilt in travel direction,
- * and faces the direction of travel (left = 1, right = -1), changing direction rarely & smoothly.
+ * Continuous off-screen-to-off-screen crossing butterflies for Scene 2.
+ * - 6 on desktop (>=1024px), 4 on mobile (<1024px)
+ * - Mixes left->right (mirrored) and right->left (default)
+ * - Some start already mid-screen so Scene 2 has butterflies immediately on entry
+ * - Re-enters with new height, size, and speed (10-18s) after leaving screen
  */
-function createWanderingFlight(bfEl, flipEl, cfg) {
-  const { dx, dy, dur, startRight } = cfg;
-  const startScaleX = startRight ? -1 : 1;
-  const endScaleX = -startScaleX;
+function initScene2Butterflies(container, prefersReducedMotion) {
+  if (!container || prefersReducedMotion) return { setRunning: () => {} };
 
-  gsap.set(flipEl, { scaleX: startScaleX });
+  const isDesktop = window.innerWidth >= 1024;
+  const count = isDesktop ? 6 : 4;
+  const activeTweens = new Set();
+  let isRunning = false;
 
-  const tl = gsap.timeline({ repeat: -1, delay: cfg.delay });
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 's2-butterfly';
 
-  // Half 1: glide along a curved arc in starting direction
-  tl.to(bfEl, {
-    x: dx,
-    y: dy,
-    rotation: startRight ? 6 : -6,
-    duration: dur,
-    ease: 'sine.inOut',
-  })
-    // Smooth, rare turn at the far end of the arc
-    .to(flipEl, { scaleX: endScaleX, duration: 0.45, ease: 'sine.inOut' }, dur - 0.25)
-    // Half 2: glide back along a slightly different vertical curve
-    .to(bfEl, {
-      x: 0,
-      y: dy * 0.35,
-      rotation: startRight ? -5 : 5,
-      duration: dur * 0.9,
+    const flip = document.createElement('div');
+    flip.className = 's2-butterfly__flip';
+
+    const wings = document.createElement('div');
+    wings.className = 's2-butterfly__wings';
+
+    const openImg = document.createElement('img');
+    openImg.src = '/assets/butterfly-open.webp';
+    openImg.alt = '';
+    openImg.className = 's2-butterfly__img s2-butterfly__img--open';
+
+    const closedImg = document.createElement('img');
+    closedImg.src = '/assets/butterfly-closed.webp';
+    closedImg.alt = '';
+    closedImg.className = 's2-butterfly__img s2-butterfly__img--closed';
+
+    wings.append(openImg, closedImg);
+    flip.appendChild(wings);
+    el.appendChild(flip);
+    container.appendChild(el);
+
+    // Distinct flap timing per butterfly
+    const flapHalf = gsap.utils.random(0.19, 0.30);
+    const flapTween = createWingFlapTween(wings, openImg, closedImg, flapHalf, i * 0.14);
+    flapTween.pause();
+    activeTweens.add(flapTween);
+
+    // Gentle vertical wave + slight tilt (independent of horizontal crossing)
+    const waveTween = gsap.to(wings, {
+      y: gsap.utils.random(-18, -10),
+      rotation: gsap.utils.random(-5, 5),
+      duration: gsap.utils.random(2.4, 3.6),
       ease: 'sine.inOut',
-    })
-    .to(bfEl, {
-      y: 0,
-      rotation: 0,
-      duration: dur * 0.4,
-      ease: 'sine.inOut',
-    })
-    .to(flipEl, { scaleX: startScaleX, duration: 0.45, ease: 'sine.inOut' }, `-=0.35`);
+      yoyo: true,
+      repeat: -1,
+    });
+    waveTween.pause();
+    activeTweens.add(waveTween);
 
-  return tl;
+    let passTween = null;
+    const launchPass = (initialProgress = 0, initialDelay = 0) => {
+      if (passTween) {
+        activeTweens.delete(passTween);
+        passTween.kill();
+      }
+
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const size = isDesktop ? gsap.utils.random(42, 86) : gsap.utils.random(30, 62);
+      const goRight = i % 2 === 0 ? Math.random() < 0.75 : Math.random() < 0.25;
+      const duration = gsap.utils.random(10, 18);
+      const startY = gsap.utils.random(vh * 0.10, vh * 0.80);
+      const endY = gsap.utils.clamp(vh * 0.08, vh * 0.84, startY + gsap.utils.random(-vh * 0.16, vh * 0.16));
+      const pad = size + 40;
+      const startX = goRight ? -pad : vw + pad;
+      const endX = goRight ? vw + pad : -pad;
+
+      el.style.width = `${Math.round(size)}px`;
+      // Mirror only while off-screen before the pass begins
+      gsap.set(flip, { scaleX: goRight ? -1 : 1 });
+      gsap.set(el, {
+        x: startX,
+        y: startY,
+        rotation: goRight ? 6 : -6,
+      });
+
+      passTween = gsap.to(el, {
+        x: endX,
+        y: endY,
+        duration,
+        delay: initialDelay,
+        ease: 'none',
+        onComplete: () => launchPass(0, gsap.utils.random(0.2, 1.5)),
+      });
+
+      if (initialProgress > 0) {
+        passTween.progress(initialProgress);
+      }
+
+      if (!isRunning) {
+        passTween.pause();
+      }
+      activeTweens.add(passTween);
+    };
+
+    // Stagger: first 3 (or 4 on desktop) are already mid-screen when Scene 2 appears
+    const initialProgresses = isDesktop
+      ? [0.22, 0.48, 0.74, 0.35, 0, 0]
+      : [0.25, 0.58, 0.80, 0];
+    const initProg = initialProgresses[i] ?? 0;
+    const initDelay = initProg > 0 ? 0 : gsap.utils.random(0.8, 3.2);
+    launchPass(initProg, initDelay);
+  }
+
+  return {
+    setRunning: (running) => {
+      isRunning = running;
+      activeTweens.forEach((tw) => (running ? tw.play() : tw.pause()));
+    },
+  };
 }
 
 /**
@@ -162,7 +240,8 @@ export function initScenes1to2(petals, prefersReducedMotion) {
   const s1Closed = scene1.querySelector('.s1-butterfly__img--closed');
 
   const s2Chakra = scene2.querySelector('.s2-chakra');
-  const s2Butterflies = scene2.querySelectorAll('.s2-butterfly');
+  const s2ButterfliesWrap = scene2.querySelector('.s2-butterflies');
+  const s2ButterflyCtrl = initScene2Butterflies(s2ButterfliesWrap, prefersReducedMotion);
 
   const ambientTweens = [];
 
@@ -220,33 +299,11 @@ export function initScenes1to2(petals, prefersReducedMotion) {
         })
       );
     }
-
-    // Scene 2 small butterflies: slow, wandering curved flight + varied flap timings
-    const s2Configs = [
-      { dx: 34,  dy: 22,  dur: 6.5, flapHalf: 0.22, delay: 0.0, startRight: true },
-      { dx: -32, dy: 26,  dur: 7.4, flapHalf: 0.27, delay: 0.8, startRight: false },
-      { dx: 28,  dy: -18, dur: 5.8, flapHalf: 0.19, delay: 1.5, startRight: true },
-      { dx: 36,  dy: -22, dur: 7.0, flapHalf: 0.25, delay: 0.4, startRight: true },
-      { dx: -40, dy: -24, dur: 6.2, flapHalf: 0.30, delay: 1.1, startRight: false },
-    ];
-    s2Butterflies.forEach((bf, i) => {
-      const cfg = s2Configs[i % s2Configs.length];
-      const flip = bf.querySelector('.s2-butterfly__flip');
-      const wings = bf.querySelector('.s2-butterfly__wings');
-      const openImg = bf.querySelector('.s2-butterfly__img--open');
-      const closedImg = bf.querySelector('.s2-butterfly__img--closed');
-
-      if (flip) {
-        ambientTweens.push(createWanderingFlight(bf, flip, cfg));
-      }
-      if (wings && openImg && closedImg) {
-        ambientTweens.push(createWingFlapTween(wings, openImg, closedImg, cfg.flapHalf, cfg.delay));
-      }
-    });
   }
 
   const setAmbientRunning = (running) => {
     ambientTweens.forEach((t) => (running ? t.play() : t.pause()));
+    s2ButterflyCtrl.setRunning(running);
   };
 
   gsap.set(scene1, { autoAlpha: 1 });
