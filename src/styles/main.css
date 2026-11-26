@@ -85,11 +85,11 @@ body {
   }
 }
 
-/* Shared Petal Layer */
+/* Shared Petal Layer (strictly above cream body background, below #app content) */
 .petal-layer {
   position: fixed;
   inset: 0;
-  z-index: 5;
+  z-index: 1;
   pointer-events: none;
   overflow: hidden;
   opacity: 0;
@@ -109,10 +109,12 @@ body {
   user-select: none;
 }
 
-/* Main App & Scene Layout */
+/* Main App & Scene Layout (z-index: 2 keeps all scenes above .petal-layer z-index: 1) */
 .app {
   position: relative;
+  z-index: 2;
   width: 100%;
+  background: transparent;
   overflow-x: clip;
 }
 
