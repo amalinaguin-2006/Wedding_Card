@@ -30,14 +30,29 @@ async function preloadFirstGroup() {
       })
   );
 
-  // Race against a 2.5s timeout so slow networks never stall the loader
+  // Race against a 5s maximum wait so slow/failed networks never stall the loader
   await Promise.race([
     Promise.all(loadPromises),
-    new Promise((resolve) => setTimeout(resolve, 2500)),
+    new Promise((resolve) => setTimeout(resolve, 5000)),
   ]);
 
   if (loader) {
     loader.classList.add('is-hidden');
+    if (prefersReducedMotion) {
+      loader.style.display = 'none';
+    } else {
+      loader.addEventListener(
+        'transitionend',
+        () => {
+          loader.style.display = 'none';
+        },
+        { once: true }
+      );
+      // Fallback in case transitionend doesn't fire
+      setTimeout(() => {
+        loader.style.display = 'none';
+      }, 600);
+    }
   }
 }
 
@@ -136,8 +151,9 @@ function initScrollStructure(petals) {
         const active = self.progress < 0.5 ? 1 : 2;
         activateSceneInGroup(group12, active);
       },
-      onEnter: () => petals?.setVisible(false),
-      onEnterBack: () => petals?.setVisible(false),
+      onToggle: (self) => {
+        if (self.isActive) petals?.setVisible(false);
+      },
     });
   }
 
@@ -157,8 +173,9 @@ function initScrollStructure(petals) {
         );
         activateSceneInGroup(group49, scenes49[idx]);
       },
-      onEnter: () => petals?.setVisible(true),
-      onEnterBack: () => petals?.setVisible(true),
+      onToggle: (self) => {
+        if (self.isActive) petals?.setVisible(true);
+      },
     });
   }
 
@@ -174,20 +191,22 @@ function initScrollStructure(petals) {
         const active = self.progress < 0.45 ? 12 : 13;
         activateSceneInGroup(group1213, active);
       },
-      onEnter: () => petals?.setVisible(false),
-      onEnterBack: () => petals?.setVisible(false),
+      onToggle: (self) => {
+        if (self.isActive) petals?.setVisible(false);
+      },
     });
   }
 
-  // Normal sections petal visibility triggers
+  // Normal sections petal visibility triggers (exact 50% viewport boundary, zero overlap)
   document.querySelectorAll('.section-scene').forEach((section) => {
     const hasPetals = section.dataset.petals === 'true';
     ScrollTrigger.create({
       trigger: section,
-      start: 'top 60%',
-      end: 'bottom 40%',
-      onEnter: () => petals?.setVisible(hasPetals),
-      onEnterBack: () => petals?.setVisible(hasPetals),
+      start: 'top 50%',
+      end: 'bottom 50%',
+      onToggle: (self) => {
+        if (self.isActive) petals?.setVisible(hasPetals);
+      },
     });
   });
 }

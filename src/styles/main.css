@@ -28,14 +28,14 @@ html {
   font-family: var(--font-bengali);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
   background-color: var(--bg-cream);
   color: var(--text-main);
   min-height: 100svh;
-  overflow-x: hidden;
+  overflow-x: clip;
   line-height: 1.5;
 }
 
@@ -113,6 +113,7 @@ body {
 .app {
   position: relative;
   width: 100%;
+  overflow-x: clip;
 }
 
 .pinned-group {
@@ -162,6 +163,7 @@ body {
   position: relative;
   z-index: 10;
   width: 100%;
+  min-width: 0;
   height: 100%;
   max-width: var(--mobile-max-w);
   max-height: 100svh;
@@ -217,8 +219,10 @@ body {
   font-size: clamp(1.2rem, 4.5vw, 2.25rem);
   color: var(--heading-red);
   font-weight: 700;
+  width: 100%;
   max-width: 100%;
-  overflow-wrap: break-word;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .placeholder-box p {
