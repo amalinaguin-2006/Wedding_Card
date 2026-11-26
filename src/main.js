@@ -3,6 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './styles/main.css';
 import { CONFIG } from './config.js';
 import { initScenes1to2, initScene3 } from './scenes/scenes1to3.js';
+import { initScenes4to9 } from './scenes/scenes4to9.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -139,34 +140,14 @@ function activateSceneInGroup(groupEl, sceneNumber) {
  * - Normal section [14]
  */
 function initScrollStructure(petals) {
-  const group49 = document.getElementById('group-4-9');
   const group1213 = document.getElementById('group-12-13');
 
   // Scenes 1–2 (pinned group) & Scene 3 (normal section)
   initScenes1to2(petals, prefersReducedMotion);
   initScene3(petals, prefersReducedMotion);
 
-  // Group [4–9]
-  if (group49) {
-    const scenes49 = [4, 5, 6, 7, 8, 9];
-    ScrollTrigger.create({
-      trigger: group49,
-      start: 'top top',
-      end: '+=540%',
-      pin: true,
-      scrub: true,
-      onUpdate: (self) => {
-        const idx = Math.min(
-          scenes49.length - 1,
-          Math.floor(self.progress * scenes49.length)
-        );
-        activateSceneInGroup(group49, scenes49[idx]);
-      },
-      onToggle: (self) => {
-        if (self.isActive) petals?.setVisible(true);
-      },
-    });
-  }
+  // Group [4–9] (Scenes 4–6 in Phase 3, Scenes 7–9 in Phase 4)
+  initScenes4to9(petals, prefersReducedMotion);
 
   // Group [12–13]
   if (group1213) {
