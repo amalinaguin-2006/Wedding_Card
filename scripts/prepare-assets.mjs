@@ -199,6 +199,12 @@ async function run() {
     .webp({ quality: 86 })
     .toFile(path.join(PUBLIC_DIR, 'og-preview.webp'));
 
+  // Copy wedding-music.mp3 if present
+  const musicSrc = path.join(ASSETS_DIR, 'wedding-music.mp3');
+  if (fs.existsSync(musicSrc)) {
+    fs.copyFileSync(musicSrc, path.join(OUT_ASSETS, 'wedding-music.mp3'));
+  }
+
   console.log('Assets prepared in public/assets/');
 }
 

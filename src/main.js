@@ -11,11 +11,95 @@ gsap.registerPlugin(ScrollTrigger);
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+const MUSIC_MUTE_KEY = 'wedding_music_muted';
+
+function initMusicController() {
+  const audio = document.getElementById('bg-music');
+  const musicBtn = document.getElementById('music-toggle');
+  if (!audio || !musicBtn) {
+    return { startOnEnter: () => {}, showToggle: () => {} };
+  }
+
+  audio.loop = true;
+  audio.volume = 0.35;
+
+  let isMuted = false;
+  try {
+    isMuted = localStorage.getItem(MUSIC_MUTE_KEY) === '1';
+  } catch {
+    isMuted = false;
+  }
+  let wasPlayingBeforeAutoPause = false;
+
+  const syncButton = () => {
+    musicBtn.classList.toggle('is-muted', isMuted);
+    musicBtn.setAttribute('aria-pressed', isMuted ? 'true' : 'false');
+    musicBtn.setAttribute('aria-label', isMuted ? 'Unmute music' : 'Mute music');
+  };
+
+  const pauseForExternal = () => {
+    if (!audio.paused) {
+      wasPlayingBeforeAutoPause = true;
+      audio.pause();
+    }
+  };
+
+  const resumeIfAllowed = () => {
+    if (wasPlayingBeforeAutoPause && !isMuted && !document.hidden) {
+      wasPlayingBeforeAutoPause = false;
+      audio.play().catch(() => {});
+    }
+  };
+
+  syncButton();
+
+  musicBtn.addEventListener('click', () => {
+    isMuted = !isMuted;
+    try {
+      localStorage.setItem(MUSIC_MUTE_KEY, isMuted ? '1' : '0');
+    } catch {
+      // ignore storage errors
+    }
+    if (isMuted) {
+      wasPlayingBeforeAutoPause = false;
+      audio.pause();
+    } else {
+      audio.play().catch(() => {});
+    }
+    syncButton();
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      pauseForExternal();
+    } else {
+      resumeIfAllowed();
+    }
+  });
+
+  window.addEventListener('focus', resumeIfAllowed);
+
+  const mapLink = document.getElementById('s13-map-link');
+  if (mapLink) {
+    mapLink.addEventListener('click', pauseForExternal);
+  }
+
+  return {
+    startOnEnter: () => {
+      musicBtn.classList.add('is-visible');
+      if (!isMuted) {
+        audio.play().catch(() => {});
+      }
+    },
+  };
+}
+
 /**
- * Preload critical images for Group [1–2], then hide the loader.
+ * Preload critical images for Group [1–2], then show the opening button "আমন্ত্রণ দেখুন".
  */
-async function preloadFirstGroup() {
+async function preloadFirstGroup(musicCtrl) {
   const loader = document.getElementById('loader');
+  const enterBtn = document.getElementById('enter-btn');
   const criticalUrls = [
     '/assets/butterfly-open.webp',
     '/assets/butterfly-closed.webp',
@@ -43,7 +127,8 @@ async function preloadFirstGroup() {
     new Promise((resolve) => setTimeout(resolve, 5000)),
   ]);
 
-  if (loader) {
+  const hideLoader = () => {
+    if (!loader) return;
     loader.classList.add('is-hidden');
     if (prefersReducedMotion) {
       loader.style.display = 'none';
@@ -55,11 +140,25 @@ async function preloadFirstGroup() {
         },
         { once: true }
       );
-      // Fallback in case transitionend doesn't fire
       setTimeout(() => {
         loader.style.display = 'none';
       }, 600);
     }
+  };
+
+  if (loader && enterBtn) {
+    loader.classList.add('is-ready');
+    enterBtn.hidden = false;
+    enterBtn.addEventListener(
+      'click',
+      () => {
+        musicCtrl?.startOnEnter();
+        hideLoader();
+      },
+      { once: true }
+    );
+  } else {
+    hideLoader();
   }
 }
 
@@ -149,9 +248,10 @@ async function init() {
   // Expose config reference for later phases
   window.__WEDDING_CONFIG__ = CONFIG;
 
+  const musicCtrl = initMusicController();
   const petals = initPetalLayer();
   initScrollStructure(petals);
-  await preloadFirstGroup();
+  await preloadFirstGroup(musicCtrl);
 }
 
 init();

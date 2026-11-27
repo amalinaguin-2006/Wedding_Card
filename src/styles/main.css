@@ -79,6 +79,76 @@ body {
   color: var(--heading-red);
 }
 
+.loader.is-ready .loader__ring,
+.loader.is-ready .loader__text {
+  display: none;
+}
+
+.loader__enter {
+  padding: 0.72rem 1.85rem;
+  border-radius: 999px;
+  border: 2px solid var(--panel-border);
+  background: var(--heading-red);
+  color: var(--bg-cream);
+  font-family: var(--font-bengali);
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(92, 20, 20, 0.22);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.loader__enter:hover,
+.loader__enter:focus-visible {
+  background: #880000;
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.music-toggle {
+  position: fixed;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  left: max(12px, env(safe-area-inset-left));
+  z-index: 100;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 2px solid var(--panel-border);
+  background: rgba(255, 244, 228, 0.92);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(92, 20, 20, 0.18);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, background-color 0.2s ease;
+}
+
+.music-toggle.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.music-toggle:hover,
+.music-toggle:focus-visible {
+  background: #ffd0d2;
+  outline: none;
+}
+
+.music-toggle .music-icon--off {
+  display: none;
+}
+
+.music-toggle.is-muted .music-icon--on {
+  display: none;
+}
+
+.music-toggle.is-muted .music-icon--off {
+  display: block;
+}
+
 @keyframes loaderSpin {
   to {
     transform: rotate(360deg);
