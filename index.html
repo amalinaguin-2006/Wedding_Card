@@ -28,7 +28,65 @@
     <div class="loader__inner">
       <div class="loader__ring"></div>
       <p class="loader__text">শুভ বিবাহ…</p>
-      <button id="enter-btn" class="loader__enter" type="button" hidden>আমন্ত্রণ দেখুন</button>
+      <button id="enter-btn" class="loader__envelope" type="button" aria-label="আমন্ত্রণ দেখুন" hidden>
+        <svg class="envelope__body" viewBox="0 0 500 300" aria-hidden="true">
+          <defs>
+            <linearGradient id="envRedGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#B0142F" />
+              <stop offset="100%" stop-color="#960A24" />
+            </linearGradient>
+            <linearGradient id="envInnerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#8A0920" />
+              <stop offset="100%" stop-color="#6E0518" />
+            </linearGradient>
+          </defs>
+          <rect x="1.5" y="1.5" width="497" height="297" rx="8" fill="url(#envRedGrad)" stroke="#D4AF37" stroke-width="2.5" />
+          <polygon points="3,3 497,3 250,185" fill="url(#envInnerGrad)" />
+          <rect x="26" y="18" width="448" height="200" rx="4" fill="#FFF4E4" opacity="0.92" />
+          <polygon points="3,297 3,3 250,185 497,3 497,297" fill="url(#envRedGrad)" />
+          <line x1="3" y1="297" x2="215" y2="158" stroke="#D4AF37" stroke-width="2" />
+          <line x1="497" y1="297" x2="285" y2="158" stroke="#D4AF37" stroke-width="2" />
+          <rect x="1.5" y="1.5" width="497" height="297" rx="8" fill="none" stroke="#D4AF37" stroke-width="2.5" />
+        </svg>
+
+        <div class="envelope__flap">
+          <svg class="envelope__flap-svg" viewBox="0 0 500 220" aria-hidden="true">
+            <defs>
+              <linearGradient id="envFlapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#B0142F" />
+                <stop offset="100%" stop-color="#960A24" />
+              </linearGradient>
+              <radialGradient id="sealGoldGrad" cx="40%" cy="35%" r="65%">
+                <stop offset="0%" stop-color="#F5DC84" />
+                <stop offset="65%" stop-color="#D4AF37" />
+                <stop offset="100%" stop-color="#A88220" />
+              </radialGradient>
+            </defs>
+            <path d="M 2 2 L 498 2 L 250 185 Z" fill="url(#envFlapGrad)" stroke="#D4AF37" stroke-width="2.5" stroke-linejoin="round" />
+            <!-- Scalloped Gold Seal with Small Flower at Flap Tip -->
+            <g transform="translate(250, 178)">
+              <path
+                d="M0,-28 C4,-28 6,-24 9,-25 C13,-26 16,-22 18,-19 C22,-20 25,-16 24,-12 C28,-10 28,-5 25,-2 C28,2 27,7 23,9 C25,13 22,18 18,18 C17,22 12,25 8,23 C5,27 0,28 -3,24 C-7,27 -12,25 -14,21 C-18,22 -22,18 -21,14 C-26,13 -27,8 -24,4 C-28,1 -27,-4 -23,-7 C-26,-11 -23,-16 -19,-16 C-19,-21 -14,-24 -10,-22 C-8,-26 -3,-28 0,-28 Z"
+                fill="url(#sealGoldGrad)"
+                stroke="#8F6B14"
+                stroke-width="1.2"
+              />
+              <circle cx="0" cy="0" r="17" fill="none" stroke="#8F6B14" stroke-width="1" opacity="0.7" />
+              <!-- Small 6-petal flower -->
+              <g fill="#FFF4E4" opacity="0.92">
+                <ellipse cx="0" cy="-7" rx="3.2" ry="5.5" />
+                <ellipse cx="0" cy="-7" rx="3.2" ry="5.5" transform="rotate(60)" />
+                <ellipse cx="0" cy="-7" rx="3.2" ry="5.5" transform="rotate(120)" />
+                <ellipse cx="0" cy="-7" rx="3.2" ry="5.5" transform="rotate(180)" />
+                <ellipse cx="0" cy="-7" rx="3.2" ry="5.5" transform="rotate(240)" />
+                <ellipse cx="0" cy="-7" rx="3.2" ry="5.5" transform="rotate(300)" />
+                <circle cx="0" cy="0" r="3" fill="#A88220" />
+              </g>
+            </g>
+          </svg>
+          <span class="envelope__label">আমন্ত্রণ দেখুন</span>
+        </div>
+      </button>
     </div>
   </div>
 
@@ -532,6 +590,8 @@
             <span class="s14-label" data-i18n="s14.seconds">সেকেন্ড</span>
           </div>
         </div>
+
+        <p class="s14-credit" data-i18n="s14.credit">পরিকল্পনা ও নির্মাণে - <strong>অমলীনা গুঁই</strong> (ছোট বোন)</p>
       </div>
     </section>
   </main>

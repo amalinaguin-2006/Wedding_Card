@@ -45,6 +45,7 @@ export const TRANSLATIONS = {
     's14.seconds': 'সেকেন্ড',
     's14.today': 'আজ শুভ বিবাহ',
     's14.after': 'শুভেচ্ছার জন্য ধন্যবাদ',
+    's14.credit': 'পরিকল্পনা ও নির্মাণে - <strong>অমলীনা গুঁই</strong> (ছোট বোন)',
   },
   en: {
     's9.heading': 'Shubho Bibaho',
@@ -92,6 +93,7 @@ export const TRANSLATIONS = {
     's14.seconds': 'Seconds',
     's14.today': 'Today is the wedding',
     's14.after': 'Thank you for your blessings',
+    's14.credit': 'Concept &amp; Created by <strong>Amalina Guin</strong> (Little Sister)',
   },
 };
 
@@ -103,7 +105,7 @@ export function formatDigits(num, lang) {
   return padded.replace(/\d/g, (d) => BN_DIGITS[Number(d)]);
 }
 
-const HTML_KEYS = new Set(['s11.s1Date', 's11.s2Date']);
+const HTML_KEYS = new Set(['s11.s1Date', 's11.s2Date', 's14.credit']);
 
 export function applyLanguage(lang) {
   const dict = TRANSLATIONS[lang] || TRANSLATIONS.bn;

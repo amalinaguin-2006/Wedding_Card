@@ -84,25 +84,81 @@ body {
   display: none;
 }
 
-.loader__enter {
-  padding: 0.72rem 1.85rem;
-  border-radius: 999px;
-  border: 2px solid var(--panel-border);
-  background: var(--heading-red);
-  color: var(--bg-cream);
-  font-family: var(--font-bengali);
-  font-size: 1.15rem;
-  font-weight: 700;
+.loader__envelope {
+  position: relative;
+  width: min(78vw, 384px);
+  aspect-ratio: 5 / 3;
+  padding: 0;
+  border: none;
+  background: transparent;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(92, 20, 20, 0.22);
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  perspective: 900px;
+  filter: drop-shadow(0 12px 26px rgba(92, 20, 20, 0.28));
+  animation: envelopeFloat 2.8s ease-in-out infinite;
 }
 
-.loader__enter:hover,
-.loader__enter:focus-visible {
-  background: #880000;
-  transform: translateY(-1px);
-  outline: none;
+.loader__envelope:focus-visible {
+  outline: 2px solid var(--panel-border);
+  outline-offset: 6px;
+  border-radius: 8px;
+}
+
+.envelope__body {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.envelope__flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 73.333%;
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  transition: transform 0.78s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.loader__envelope.is-opening {
+  animation: none;
+  pointer-events: none;
+}
+
+.loader__envelope.is-opening .envelope__flap {
+  transform: rotateX(165deg);
+}
+
+.envelope__flap-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.envelope__label {
+  position: absolute;
+  top: 26%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  text-align: center;
+  font-family: var(--font-bengali);
+  font-size: clamp(1.05rem, 4.4vw, 1.45rem);
+  font-weight: 700;
+  color: var(--bg-cream);
+  text-shadow: 0 1px 3px rgba(60, 0, 12, 0.45);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+@keyframes envelopeFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.015);
+  }
 }
 
 .music-toggle {

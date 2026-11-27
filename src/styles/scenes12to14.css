@@ -57,7 +57,8 @@ html[data-lang="en"] .s14-heading,
 html[data-lang="en"] .s14-sub,
 html[data-lang="en"] .s14-status,
 html[data-lang="en"] .s14-num,
-html[data-lang="en"] .s14-label {
+html[data-lang="en"] .s14-label,
+html[data-lang="en"] .s14-credit {
   font-family: var(--font-english);
 }
 
@@ -374,7 +375,7 @@ html[data-lang="en"] .s11-scroll__body {
 }
 
 .s14-couple-img {
-  height: clamp(200px, 34svh, 350px);
+  height: clamp(175px, 30svh, 330px);
   width: auto;
   max-width: 70vw;
   object-fit: contain;
@@ -449,9 +450,24 @@ html[data-lang="en"] .s11-scroll__body {
   line-height: 1.15;
 }
 
+.s14-credit {
+  font-family: var(--font-bengali);
+  font-size: clamp(13.5px, 3.6vw, 15px);
+  font-weight: 400;
+  color: var(--text-main);
+  text-align: center;
+  line-height: 1.35;
+  max-width: min(76vw, 520px);
+  margin-top: clamp(0.25rem, 0.9svh, 0.5rem);
+}
+
+.s14-credit strong {
+  font-weight: 700;
+}
+
 @media (min-width: 1024px) {
   .s14-couple-img {
-    height: clamp(250px, 38svh, 390px);
+    height: clamp(240px, 36svh, 370px);
   }
   .s14-countdown-card {
     max-width: 600px;
@@ -463,5 +479,9 @@ html[data-lang="en"] .s11-scroll__body {
   }
   .s14-label {
     font-size: 1.25rem;
+  }
+  .s14-credit {
+    font-size: 17px;
+    max-width: 600px;
   }
 }

@@ -153,7 +153,12 @@ async function preloadFirstGroup(musicCtrl) {
       'click',
       () => {
         musicCtrl?.startOnEnter();
-        hideLoader();
+        if (prefersReducedMotion) {
+          hideLoader();
+        } else {
+          enterBtn.classList.add('is-opening');
+          setTimeout(hideLoader, 780);
+        }
       },
       { once: true }
     );
