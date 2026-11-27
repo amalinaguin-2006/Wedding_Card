@@ -167,6 +167,9 @@ async function run() {
     } else if (file === 'sparkle.png') {
       await cropComponents(src, OUT_SPARKLES, 'star', 20);
       await sharp(src).webp({ quality: 88, alphaQuality: 95 }).toFile(dest);
+    } else if (file === 'family-groom.png' || file === 'family-bride.png') {
+      // Trim only empty transparent space around the group without cropping anyone
+      await sharp(src).trim().webp({ quality: 86, alphaQuality: 95 }).toFile(dest);
     } else if (file === 'cloth-red.png') {
       await sharp(src).webp({ quality: 86, alphaQuality: 95 }).toFile(dest);
       await createExtendedCloth(src, path.join(OUT_ASSETS, 'cloth-red-long.webp'), 0.495, 0.512, 950);
