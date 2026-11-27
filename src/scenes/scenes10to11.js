@@ -161,11 +161,11 @@ export function initScenes10to11(petals, prefersReducedMotion) {
       const hairOmega = (Math.PI * 2) / 1.95;
       const sareeOmega = (Math.PI * 2) / 2.18;
 
-      const hx = hairWeight * Math.sin(t * hairOmega + v * 4.5 + u * 2.0) * 18.0;
-      const hy = hairWeight * Math.cos(t * hairOmega + u * 4.0) * 12.0;
+      const hx = hairWeight * Math.sin(t * hairOmega + v * 4.5 + u * 2.0) * 13.5;
+      const hy = hairWeight * Math.cos(t * hairOmega + u * 4.0) * 9.0;
 
-      const sx = sareeWeight * Math.sin(t * sareeOmega + u * 4.0 + v * 2.5) * 34.0;
-      const sy = sareeWeight * Math.cos(t * sareeOmega + u * 3.5) * 19.0;
+      const sx = sareeWeight * Math.sin(t * sareeOmega + u * 4.0 + v * 2.5) * 25.5;
+      const sy = sareeWeight * Math.cos(t * sareeOmega + u * 3.5) * 14.25;
 
       return {
         wx: hx + sx,
