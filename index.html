@@ -273,19 +273,24 @@
     <!-- Normal Section [10] -->
     <section id="scene-10" class="section-scene scene--10" data-scene="10" data-petals="false">
       <div class="s10-stage">
-        <canvas class="s10-bg-canvas" aria-hidden="true"></canvas>
+        <picture>
+          <source media="(min-width: 1024px)" srcset="/assets/p10-desktop-background.webp" />
+          <img src="/assets/p10-background.webp" alt="" class="s10-bg" loading="lazy" />
+        </picture>
 
         <!-- Bride leaning from the arched window (weighted mesh warp on outer hair & saree trail) -->
         <div class="s10-bride-wrap">
-          <canvas width="500" height="500" class="s10-bride-canvas" aria-label="Aindrila"></canvas>
+          <canvas width="572" height="436" class="s10-bride-canvas" aria-label="Aindrila"></canvas>
         </div>
 
-        <!-- Groom riding in on motorbike (masked wheel layers + chassis bounce) -->
+        <!-- Groom riding in on motorbike (3-layer: base -> rotating wheels -> static foreground parts) -->
         <div class="s10-groom-wrap">
           <div class="s10-bike-chassis">
             <img src="/assets/p10-groom-bike.webp" alt="Pabitrarghya on motorbike" class="s10-groom-bike s10-groom-bike--body" loading="lazy" />
             <img src="/assets/p10-groom-bike.webp" alt="" class="s10-groom-bike s10-wheel s10-wheel--rear" aria-hidden="true" loading="lazy" />
             <img src="/assets/p10-groom-bike.webp" alt="" class="s10-groom-bike s10-wheel s10-wheel--front" aria-hidden="true" loading="lazy" />
+            <img src="/assets/p10-groom-bike.webp" alt="" class="s10-groom-bike s10-bike-fg s10-bike-fg--rear" aria-hidden="true" loading="lazy" />
+            <img src="/assets/p10-groom-bike.webp" alt="" class="s10-groom-bike s10-bike-fg s10-bike-fg--front" aria-hidden="true" loading="lazy" />
           </div>
         </div>
 

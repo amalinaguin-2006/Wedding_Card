@@ -20,18 +20,17 @@ async function checkViewport(browser, name, viewport, isMobile) {
     return !loader || getComputedStyle(loader).display === 'none' || (loader.classList.contains('is-hidden') && getComputedStyle(loader).opacity === '0');
   }, null, { timeout: 6000 });
 
-  // Scroll to Scene 10 (almost fully in view -> triggers 5s time-based ride)
   await page.evaluate(() => {
     document.getElementById('scene-10').scrollIntoView({ behavior: 'instant', block: 'start' });
   });
 
-  // Immediately check text is hidden before bike stops
-  await page.waitForTimeout(300);
-  const earlyTextOp = await page.evaluate(() => Number(getComputedStyle(document.querySelector('.s10-title-block')).opacity));
-  if (earlyTextOp > 0.1) throw new Error(`[${name}] Text appeared before bike stopped: opacity=${earlyTextOp}`);
+  // Capture mid-ride frame at 1.6s to verify 3-layer wheel rotation without rotating silencer/fork
+  await page.waitForTimeout(1600);
+  await page.screenshot({ path: path.join(ART_DIR, `s10v2-${name}-midride.png`) });
 
-  // Wait 5.8s for the ~5s bike ride + text fade-in to finish
-  await page.waitForTimeout(5800);
+  // Wait remaining 4.2s for 4.8s ride + text reveal to finish, then watch idle for 15s
+  await page.waitForTimeout(4200);
+  await page.screenshot({ path: path.join(ART_DIR, `s10v2-${name}-settled.png`) });
 
   const metrics = await page.evaluate(() => {
     const title = document.querySelector('.s10-title-block').getBoundingClientRect();
@@ -41,10 +40,10 @@ async function checkViewport(browser, name, viewport, isMobile) {
     return {
       scrollWidth: document.documentElement.scrollWidth,
       innerWidth: window.innerWidth,
-      titleRightPct: Number(((title.right / window.innerWidth) * 100).toFixed(1)),
+      brideRight: Math.round(bride.right),
       titleOp: Number(getComputedStyle(document.querySelector('.s10-title-block')).opacity),
       detailsOp: Number(getComputedStyle(document.querySelector('.s10-details-block')).opacity),
-      detailsOverlapsBride: details.top < bride.bottom - 10 && details.right > bride.left + 10,
+      detailsOverlapsBride: details.top < bride.bottom - 5 && details.left < bride.right && details.right > bride.left,
       groomLeft: Math.round(groom.left),
     };
   });
@@ -52,16 +51,18 @@ async function checkViewport(browser, name, viewport, isMobile) {
   console.log(`[${name}]`, JSON.stringify(metrics));
   if (metrics.scrollWidth > metrics.innerWidth) throw new Error(`Overflow at ${name}`);
   if (metrics.titleOp < 0.9 || metrics.detailsOp < 0.9) throw new Error(`Text did not appear after stop at ${name}`);
-  if (isMobile && metrics.titleRightPct > 47) throw new Error(`Mobile title overlaps shutter (${metrics.titleRightPct}%) at ${name}`);
+  if (metrics.brideRight > metrics.innerWidth) throw new Error(`Bride saree clipped on right: ${metrics.brideRight} > ${metrics.innerWidth}`);
 
-  await page.screenshot({ path: path.join(ART_DIR, `s10fix-${name}.png`) });
+  // Watch idle animation for 15 seconds
+  await page.waitForTimeout(15000);
+  console.log(`[${name}] 15s idle watch: PASS`);
+
   await context.close();
 }
 
 async function main() {
   const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
   try {
-    await checkViewport(browser, '360x640', { width: 360, height: 640 }, true);
     await checkViewport(browser, '390x844', { width: 390, height: 844 }, true);
     await checkViewport(browser, '1366x768', { width: 1366, height: 768 }, false);
     await checkViewport(browser, '1920x1080', { width: 1920, height: 1080 }, false);

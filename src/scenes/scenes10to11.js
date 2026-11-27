@@ -134,8 +134,6 @@ export function initScenes10to11(petals, prefersReducedMotion) {
 
   // --- SCENE 10 ---
   if (scene10) {
-    const isDesktop = window.innerWidth >= 1024;
-    const bgCanvas = scene10.querySelector('.s10-bg-canvas');
     const brideCanvas = scene10.querySelector('.s10-bride-canvas');
     const groomWrap = scene10.querySelector('.s10-groom-wrap');
     const chassis = scene10.querySelector('.s10-bike-chassis');
@@ -143,69 +141,16 @@ export function initScenes10to11(petals, prefersReducedMotion) {
     const titleBlock = scene10.querySelector('.s10-title-block');
     const detailsBlock = scene10.querySelector('.s10-details-block');
 
-    // Size background canvas to stage
-    const syncBgSize = () => {
-      if (!bgCanvas) return;
-      const rect = bgCanvas.getBoundingClientRect();
-      bgCanvas.width = Math.max(360, Math.round(rect.width));
-      bgCanvas.height = Math.max(540, Math.round(rect.height));
-    };
-    syncBgSize();
-
-    // Weighted mesh warp for background leaf tips only (pots, wall, window, road stay still)
-    const bgSrc = isDesktop ? '/assets/p10-desktop-background.webp' : '/assets/p10-background.webp';
-    const bgWarp = createWeightedMeshWarp(bgCanvas, bgSrc, 22, 22, (u, v, t) => {
+    // Weighted mesh warp for Bride (572x436): ONLY outer hair ends & saree trail wave; face, body, hands, jewellery stay still
+    const brideWarp = createWeightedMeshWarp(brideCanvas, '/assets/p10-bride.webp', 22, 18, (u, v, t) => {
       if (t === 0) return { wx: 0, wy: 0 };
-      let wx = 0, wy = 0;
-
-      if (isDesktop) {
-        // Top-left hanging vines (tips hang down from top edge)
-        const tl = (1 - smoothstep(0.0, 0.36, u)) * smoothstep(0.05, 0.42, v) * (1 - smoothstep(0.42, 0.50, v));
-        wx += tl * Math.sin(t * 1.15 + v * 5) * 4.5;
-        wy += tl * Math.cos(t * 0.95 + u * 4) * 1.5;
-
-        // Top-right hanging vines
-        const tr = smoothstep(0.64, 1.0, u) * smoothstep(0.05, 0.42, v) * (1 - smoothstep(0.42, 0.50, v));
-        wx += tr * Math.sin(t * 1.0 + 1.4 + v * 5) * 4.5;
-
-        // Window hanging pothos tips (around u: 0.58-0.65, v: 0.22-0.35)
-        const wp = smoothstep(0.57, 0.61, u) * (1 - smoothstep(0.64, 0.67, u)) * smoothstep(0.20, 0.32, v) * (1 - smoothstep(0.32, 0.38, v));
-        wx += wp * Math.sin(t * 1.4 + 2.2) * 3.5;
-
-        // Lower-left potted plant tips (above pots v: 0.43-0.73, pots sit at v > 0.75)
-        const ll = (1 - smoothstep(0.18, 0.35, u)) * smoothstep(0.73, 0.45, v) * smoothstep(0.38, 0.48, v);
-        wx += ll * Math.sin(t * 0.9 + 0.7 + u * 6) * 4.0;
-      } else {
-        // Mobile: top-left hanging vine tips
-        const tl = (1 - smoothstep(0.0, 0.56, u)) * smoothstep(0.04, 0.32, v) * (1 - smoothstep(0.32, 0.38, v));
-        wx += tl * Math.sin(t * 1.1 + v * 5) * 4.0;
-
-        // Mobile: window hanging pothos tips (right side)
-        const wp = smoothstep(0.88, 0.94, u) * smoothstep(0.18, 0.26, v) * (1 - smoothstep(0.26, 0.32, v));
-        wx += wp * Math.sin(t * 1.45 + 1.8) * 3.2;
-
-        // Mobile: left potted monstera tips (pot is below v=0.72)
-        const ll = (1 - smoothstep(0.10, 0.25, u)) * smoothstep(0.72, 0.55, v) * smoothstep(0.50, 0.57, v);
-        wx += ll * Math.sin(t * 0.95 + 0.6) * 3.5;
-
-        // Mobile: right lower plant tips (pot below v=0.76)
-        const rl = smoothstep(0.78, 0.92, u) * smoothstep(0.76, 0.62, v) * smoothstep(0.58, 0.65, v);
-        wx += rl * Math.sin(t * 1.2 + 2.6) * 3.5;
-      }
-
-      return { wx, wy };
-    });
-
-    // Weighted mesh warp for Bride: ONLY outer hair ends & saree trail wave; face, body, hands, jewellery stay still
-    const brideWarp = createWeightedMeshWarp(brideCanvas, '/assets/p10-bride.webp', 20, 20, (u, v, t) => {
-      if (t === 0) return { wx: 0, wy: 0 };
-      const hairWeight = smoothstep(0.57, 0.72, u) * smoothstep(0.55, 0.85, v);
-      const sareeWeight = smoothstep(0.72, 0.95, u) * smoothstep(0.58, 0.86, v);
+      const hairWeight = smoothstep(0.28, 0.42, u) * (1 - smoothstep(0.46, 0.54, u)) * smoothstep(0.56, 0.88, v);
+      const sareeWeight = smoothstep(0.45, 0.72, u) * smoothstep(0.42, 0.78, v);
       const w = Math.max(hairWeight, sareeWeight);
       if (w <= 0) return { wx: 0, wy: 0 };
       return {
-        wx: w * Math.sin(t * 1.6 + v * 5.0 + u * 2.0) * 5.5,
-        wy: w * Math.cos(t * 1.3 + u * 4.5) * 3.5,
+        wx: w * Math.sin(t * 1.5 + v * 5.0 + u * 2.0) * 5.0,
+        wy: w * Math.cos(t * 1.25 + u * 4.5) * 3.5,
       };
     });
 
@@ -291,7 +236,6 @@ export function initScenes10to11(petals, prefersReducedMotion) {
       end: 'bottom 18%',
       onEnter: () => {
         if (!prefersReducedMotion) {
-          bgWarp.start();
           brideWarp.start();
           bounceTween?.restart();
           entryTl?.restart();
@@ -299,19 +243,16 @@ export function initScenes10to11(petals, prefersReducedMotion) {
       },
       onEnterBack: () => {
         if (!prefersReducedMotion) {
-          bgWarp.start();
           brideWarp.start();
           bounceTween?.restart();
           entryTl?.restart();
         }
       },
       onLeave: () => {
-        bgWarp.stop();
         brideWarp.stop();
         resetEntry();
       },
       onLeaveBack: () => {
-        bgWarp.stop();
         brideWarp.stop();
         resetEntry();
       },

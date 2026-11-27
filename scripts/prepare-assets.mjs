@@ -159,9 +159,7 @@ async function run() {
     const base = file.replace(/\.(png|jpe?g)$/i, '');
     const dest = path.join(OUT_ASSETS, `${base}.webp`);
 
-    if (file === 'p10-bride.png') {
-      await cleanAndConvertP10Bride(src, dest);
-    } else if (file === 'petal.png') {
+    if (file === 'petal.png') {
       await cropComponents(src, OUT_PETALS, 'petal', 80);
       await sharp(src).webp({ quality: 88, alphaQuality: 95 }).toFile(dest);
     } else if (file === 'sparkle.png') {
