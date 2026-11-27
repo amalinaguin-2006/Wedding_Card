@@ -2,7 +2,7 @@
    Scene 10: Wall, Window, Bride (Mesh Warp), Motorbike Entry & Masked Wheels
    ========================================================================== */
 .scene--10 {
-  background-color: #824b33;
+  background-color: #965b3d;
   padding: 0;
 }
 
@@ -12,6 +12,14 @@
   height: 100svh;
   margin: 0 auto;
   overflow: hidden;
+}
+
+.s10-bg-frame {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 1536 / 2752;
 }
 
 .s10-bg {
@@ -28,9 +36,9 @@
 
 .s10-bride-wrap {
   position: absolute;
-  top: 16%;
-  right: 2%;
-  width: 52%;
+  top: 13.5%;
+  left: 65%;
+  width: 35%;
   z-index: 3;
   pointer-events: none;
   user-select: none;
@@ -46,9 +54,9 @@
 
 .s10-groom-wrap {
   position: absolute;
-  bottom: 9.5%;
-  left: 1%;
-  width: 114%;
+  bottom: 8%;
+  left: -1%;
+  width: 131%;
   z-index: 4;
   pointer-events: none;
   user-select: none;
@@ -103,6 +111,122 @@
   will-change: transform;
 }
 
+/* Plants */
+.s10-plant {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+}
+
+.s10-plant img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.s10-plant-sway,
+.s10-pot-leaves {
+  will-change: transform;
+}
+
+/* p10-plant-2: Corner garlands */
+.s10-plant--corner-tl {
+  top: 0;
+  left: 0;
+  width: 33%;
+  z-index: 5;
+}
+
+.s10-plant--corner-tr {
+  top: 0;
+  right: 0;
+  width: 33%;
+  z-index: 5;
+  transform: scaleX(-1);
+}
+
+.s10-plant-sway--tl,
+.s10-plant-sway--tr {
+  transform-origin: 0% 0%;
+}
+
+/* p10-plant-3: Hanging plant in window (clear of bride's face) */
+.s10-plant--window {
+  top: 11.5%;
+  left: 86%;
+  width: 7.5%;
+  z-index: 2;
+}
+
+.s10-plant-sway--window {
+  transform-origin: 50% 0%;
+}
+
+/* p10-plant-5 & p10-plant-4: Potted plants (pots static, leaves sway) */
+.s10-plant--pot-left {
+  bottom: 12%;
+  left: 0;
+  width: 22%;
+  z-index: 2;
+}
+
+.s10-plant--pot-right {
+  bottom: 11.5%;
+  right: 0;
+  width: 22%;
+  z-index: 3;
+}
+
+.s10-pot-base {
+  position: relative;
+  z-index: 1;
+}
+
+.s10-pot-leaves {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.s10-pot-base--left {
+  clip-path: inset(70% 0 0 0);
+}
+
+.s10-pot-leaves--left {
+  clip-path: inset(0 0 29% 0);
+  transform-origin: 62% 71%;
+}
+
+.s10-pot-base--right {
+  clip-path: inset(69% 0 0 0);
+}
+
+.s10-pot-leaves--right {
+  clip-path: inset(0 0 30% 0);
+  transform-origin: 60% 70%;
+}
+
+/* p10-plant-1: Bottom clumps (rotate from base; left behind wheels on mobile) */
+.s10-plant--bottom-left {
+  bottom: -1%;
+  left: -1%;
+  width: 22%;
+  z-index: 3;
+  transform: scaleX(-1);
+}
+
+.s10-plant--bottom-right {
+  bottom: -1%;
+  right: -1%;
+  width: 24%;
+  z-index: 5;
+}
+
+.s10-plant-sway--bl,
+.s10-plant-sway--br {
+  transform-origin: 50% 100%;
+}
+
 .s10-text-layer {
   position: absolute;
   inset: 0;
@@ -114,7 +238,7 @@
 /* Mobile: stay strictly left of window shutter (<46%) */
 .s10-title-block {
   position: absolute;
-  top: 15%;
+  top: 13%;
   left: 3%;
   width: 42%;
   text-align: center;
@@ -165,9 +289,9 @@
 /* Mobile: clear of window, bride & bike */
 .s10-details-block {
   position: absolute;
-  top: 41%;
-  right: 3%;
-  width: 44%;
+  top: 39%;
+  right: 4%;
+  width: 46%;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -193,6 +317,12 @@
     height: 100svh;
     max-height: none;
   }
+  .s10-bg-frame {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+  }
   /* Window opening in p10-desktop-background is around left 47.6%-64.6%, top 14%-39.5% */
   .s10-bride-wrap {
     top: 18%;
@@ -200,11 +330,43 @@
     right: auto;
     width: clamp(230px, 21vw, 340px);
   }
-  /* Groom & bike at lower left */
+  /* Groom & bike at lower left (~30% bigger, anchored from bottom) */
   .s10-groom-wrap {
     bottom: 6%;
+    left: 14%;
+    width: clamp(442px, 44vw, 676px);
+  }
+  /* Desktop plant positions */
+  .s10-plant--corner-tl,
+  .s10-plant--corner-tr {
+    width: clamp(200px, 19vw, 340px);
+  }
+  .s10-plant--window {
+    top: 14.5%;
+    left: 60%;
+    width: clamp(50px, 4.2vw, 76px);
+  }
+  .s10-plant--pot-left {
+    bottom: 13%;
     left: 16%;
-    width: clamp(340px, 34vw, 520px);
+    width: clamp(135px, 11.5vw, 210px);
+  }
+  .s10-plant--pot-right {
+    bottom: 11%;
+    right: 2%;
+    width: clamp(120px, 10vw, 190px);
+  }
+  .s10-plant--bottom-left {
+    bottom: -1%;
+    left: 1%;
+    width: clamp(140px, 12vw, 220px);
+    z-index: 5;
+  }
+  .s10-plant--bottom-right {
+    bottom: -1%;
+    right: 1%;
+    width: clamp(140px, 12vw, 220px);
+    z-index: 5;
   }
   /* Heading, names & first paragraph at upper left-centre */
   .s10-title-block {

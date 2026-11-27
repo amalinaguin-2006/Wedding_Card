@@ -135,7 +135,16 @@ export function initScenes10to11(petals, prefersReducedMotion) {
   // --- SCENE 10 ---
   if (scene10) {
     // Preload Scene 10 assets so entry begins immediately with zero delay
-    ['/assets/p10-bride.webp', '/assets/bike-body.webp', '/assets/bike-wheel.webp'].forEach((src) => {
+    [
+      '/assets/p10-bride.webp',
+      '/assets/bike-body.webp',
+      '/assets/bike-wheel.webp',
+      '/assets/p10-plant-1.webp',
+      '/assets/p10-plant-2.webp',
+      '/assets/p10-plant-3.webp',
+      '/assets/p10-plant-4.webp',
+      '/assets/p10-plant-5.webp',
+    ].forEach((src) => {
       const pre = new Image();
       pre.src = src;
     });
@@ -150,22 +159,21 @@ export function initScenes10to11(petals, prefersReducedMotion) {
     const detailsBlock = scene10.querySelector('.s10-details-block');
 
     // Weighted mesh warp for Bride (572x436 inside 652x516 padded canvas):
-    // ~2s cycle with slightly different timing for hair (1.95s) and saree (2.18s).
-    // Hair tips move ~8px and saree trail ~14px at 390px phone width, scaling up on desktop.
+    // ~2.5s cycle; hair ends move ~3px and saree trail ~5px at 390px phone width, scaling proportionally on desktop.
     const brideWarp = createWeightedMeshWarp(brideCanvas, '/assets/p10-bride.webp', 28, 22, (u, v, t) => {
       if (t === 0) return { wx: 0, wy: 0 };
       const hairWeight = smoothstep(0.27, 0.41, u) * (1 - smoothstep(0.46, 0.54, u)) * smoothstep(0.54, 0.88, v);
       const sareeWeight = smoothstep(0.46, 0.86, u) * smoothstep(0.42, 0.84, v);
       if (hairWeight <= 0 && sareeWeight <= 0) return { wx: 0, wy: 0 };
 
-      const hairOmega = (Math.PI * 2) / 1.95;
-      const sareeOmega = (Math.PI * 2) / 2.18;
+      const hairOmega = (Math.PI * 2) / 2.45;
+      const sareeOmega = (Math.PI * 2) / 2.58;
 
-      const hx = hairWeight * Math.sin(t * hairOmega + v * 4.5 + u * 2.0) * 13.5;
-      const hy = hairWeight * Math.cos(t * hairOmega + u * 4.0) * 9.0;
+      const hx = hairWeight * Math.sin(t * hairOmega + v * 4.5 + u * 2.0) * 10.5;
+      const hy = hairWeight * Math.cos(t * hairOmega + u * 4.0) * 6.5;
 
-      const sx = sareeWeight * Math.sin(t * sareeOmega + u * 4.0 + v * 2.5) * 25.5;
-      const sy = sareeWeight * Math.cos(t * sareeOmega + u * 3.5) * 14.25;
+      const sx = sareeWeight * Math.sin(t * sareeOmega + u * 4.0 + v * 2.5) * 17.5;
+      const sy = sareeWeight * Math.cos(t * sareeOmega + u * 3.5) * 10.0;
 
       return {
         wx: hx + sx,
@@ -173,15 +181,48 @@ export function initScenes10to11(petals, prefersReducedMotion) {
       };
     });
 
+    // Gentle plant sway tweens (2-4 deg, 3-5s cycles, distinct timing per plant)
+    const plantTweens = [];
+    if (!prefersReducedMotion) {
+      const plantConfigs = [
+        ['.s10-plant-sway--tl', 2.6, 3.8, 0],
+        ['.s10-plant-sway--tr', 2.8, 4.3, 0.4],
+        ['.s10-plant-sway--window', 3.2, 4.1, 0.2],
+        ['.s10-pot-leaves--left', 2.8, 4.7, 0.6],
+        ['.s10-pot-leaves--right', 3.4, 3.5, 0.3],
+        ['.s10-plant-sway--bl', 2.5, 4.9, 0.5],
+        ['.s10-plant-sway--br', 2.7, 3.3, 0.1],
+      ];
+      plantConfigs.forEach(([sel, deg, dur, delay]) => {
+        const el = scene10.querySelector(sel);
+        if (!el) return;
+        plantTweens.push(
+          gsap.fromTo(
+            el,
+            { rotation: -deg },
+            {
+              rotation: deg,
+              duration: dur,
+              delay,
+              ease: 'sine.inOut',
+              yoyo: true,
+              repeat: -1,
+              paused: true,
+            }
+          )
+        );
+      });
+    }
+
     const getWheelRotationDeg = (wheelEl) => {
       const travelPx = window.innerWidth * 1.15;
-      const wheelDiameter = wheelEl?.getBoundingClientRect().width || 80;
+      const wheelDiameter = wheelEl?.getBoundingClientRect().width || 92;
       const rawDeg = (travelPx / (Math.PI * wheelDiameter)) * 360;
-      // For power2.out over 2.8s, peak slope is 2x average speed -> 756deg caps peak speed at 1.5 turns/sec
-      return Math.min(rawDeg, 756);
+      // For power2.out over 4.0s, peak slope is 2x average speed -> 1080deg caps peak speed at 1.5 turns/sec
+      return Math.min(rawDeg, 1080);
     };
 
-    // Time-based 2.8s Groom Entry + Clockwise Wheel Rotation + Engine Bounce + Post-Stop Text Reveal
+    // Time-based 4.0s Groom Entry + Clockwise Wheel Rotation + Engine Bounce + Post-Stop Text Reveal
     let entryTl = null;
     let bounceTween = null;
 
@@ -221,32 +262,32 @@ export function initScenes10to11(petals, prefersReducedMotion) {
         .fromTo(
           groomWrap,
           { x: '-115vw' },
-          { x: 0, duration: 2.8, ease: 'power2.out' },
+          { x: 0, duration: 4.0, ease: 'power2.out' },
           0
         )
         .fromTo(
           rearWheel,
           { rotation: 0 },
-          { rotation: () => getWheelRotationDeg(rearWheel), duration: 2.8, ease: 'power2.out' },
+          { rotation: () => getWheelRotationDeg(rearWheel), duration: 4.0, ease: 'power2.out' },
           0
         )
         .fromTo(
           frontWheel,
           { rotation: 0 },
-          { rotation: () => getWheelRotationDeg(frontWheel), duration: 2.8, ease: 'power2.out' },
+          { rotation: () => getWheelRotationDeg(frontWheel), duration: 4.0, ease: 'power2.out' },
           0
         )
         .fromTo(
           titleBlock,
           { autoAlpha: 0, y: 14 },
           { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' },
-          2.65
+          3.85
         )
         .fromTo(
           detailsBlock,
           { autoAlpha: 0, y: 14 },
           { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' },
-          2.8
+          4.0
         );
     }
 
@@ -270,6 +311,7 @@ export function initScenes10to11(petals, prefersReducedMotion) {
       onEnter: () => {
         if (!prefersReducedMotion) {
           brideWarp.start();
+          plantTweens.forEach((tw) => tw.play());
           bounceTween?.restart();
           entryTl?.invalidate().restart();
         }
@@ -277,16 +319,19 @@ export function initScenes10to11(petals, prefersReducedMotion) {
       onEnterBack: () => {
         if (!prefersReducedMotion) {
           brideWarp.start();
+          plantTweens.forEach((tw) => tw.play());
           bounceTween?.restart();
           entryTl?.invalidate().restart();
         }
       },
       onLeave: () => {
         brideWarp.stop();
+        plantTweens.forEach((tw) => tw.pause());
         resetEntry();
       },
       onLeaveBack: () => {
         brideWarp.stop();
+        plantTweens.forEach((tw) => tw.pause());
         resetEntry();
       },
     });

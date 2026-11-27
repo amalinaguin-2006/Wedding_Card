@@ -24,13 +24,13 @@ async function checkViewport(browser, name, viewport, isMobile) {
     document.getElementById('scene-10').scrollIntoView({ behavior: 'instant', block: 'start' });
   });
 
-  // Capture mid-ride frame at 1.0s into the 2.8s ride to verify wheels rotating behind bike-body
-  await page.waitForTimeout(1000);
-  await page.screenshot({ path: path.join(ART_DIR, `s10v3-${name}-midride.png`) });
+  // Capture mid-ride frame at 1.4s into the 4.0s ride to verify wheels rotating behind bike-body
+  await page.waitForTimeout(1400);
+  await page.screenshot({ path: path.join(ART_DIR, `s10v4-${name}-midride.png`) });
 
-  // Wait remaining 2.5s for 2.8s ride + text reveal to finish, then watch idle for 15s
-  await page.waitForTimeout(2500);
-  await page.screenshot({ path: path.join(ART_DIR, `s10v3-${name}-settled.png`) });
+  // Wait remaining 3.2s for 4.0s ride + text reveal to finish, then watch idle for 15s
+  await page.waitForTimeout(3200);
+  await page.screenshot({ path: path.join(ART_DIR, `s10v4-${name}-settled.png`) });
 
   const metrics = await page.evaluate(() => {
     const title = document.querySelector('.s10-title-block').getBoundingClientRect();
@@ -63,7 +63,10 @@ async function checkViewport(browser, name, viewport, isMobile) {
 async function main() {
   const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
   try {
+    await checkViewport(browser, '360x640', { width: 360, height: 640 }, true);
     await checkViewport(browser, '390x844', { width: 390, height: 844 }, true);
+    await checkViewport(browser, '430x932', { width: 430, height: 932 }, true);
+    await checkViewport(browser, '1366x768', { width: 1366, height: 768 }, false);
     await checkViewport(browser, '1920x1080', { width: 1920, height: 1080 }, false);
   } finally {
     await browser.close();

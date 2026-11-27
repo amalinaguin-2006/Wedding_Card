@@ -16,11 +16,6 @@ fs.mkdirSync(OUT_SPARKLES, { recursive: true });
 // Skip files we explicitly decided not to use
 const SKIP_FILES = new Set([
   'p10-bride-hair.png',
-  'p10-plant-1.png',
-  'p10-plant-2.png',
-  'p10-plant-3.png',
-  'p10-plant-4.png',
-  'p10-plant-5.png',
   'elephant-body.png',
   'elephant-trunk.png',
   'butterfly.png',

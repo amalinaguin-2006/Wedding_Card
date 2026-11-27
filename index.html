@@ -273,14 +273,63 @@
     <!-- Normal Section [10] -->
     <section id="scene-10" class="section-scene scene--10" data-scene="10" data-petals="false">
       <div class="s10-stage">
-        <picture>
-          <source media="(min-width: 1024px)" srcset="/assets/p10-desktop-background.webp" />
-          <img src="/assets/p10-background.webp" alt="" class="s10-bg" loading="eager" />
-        </picture>
+        <!-- Corner garlands (p10-plant-2, top-left & mirrored top-right) -->
+        <div class="s10-plant s10-plant--corner-tl" aria-hidden="true">
+          <img src="/assets/p10-plant-2.webp" alt="" class="s10-plant-sway s10-plant-sway--tl" loading="eager" />
+        </div>
+        <div class="s10-plant s10-plant--corner-tr" aria-hidden="true">
+          <img src="/assets/p10-plant-2.webp" alt="" class="s10-plant-sway s10-plant-sway--tr" loading="eager" />
+        </div>
 
-        <!-- Bride leaning from the arched window (weighted mesh warp on outer hair & saree trail) -->
-        <div class="s10-bride-wrap">
-          <canvas width="652" height="516" class="s10-bride-canvas" aria-label="Aindrila"></canvas>
+        <!-- Background-locked frame (keeps mobile window, bride, window plant & text aligned on all phones) -->
+        <div class="s10-bg-frame">
+          <picture>
+            <source media="(min-width: 1024px)" srcset="/assets/p10-desktop-background.webp" />
+            <img src="/assets/p10-background.webp" alt="" class="s10-bg" loading="eager" />
+          </picture>
+
+          <!-- Hanging plant in window (p10-plant-3, swings from top, clear of bride's face) -->
+          <div class="s10-plant s10-plant--window" aria-hidden="true">
+            <img src="/assets/p10-plant-3.webp" alt="" class="s10-plant-sway s10-plant-sway--window" loading="eager" />
+          </div>
+
+          <!-- Bride leaning from the arched window (weighted mesh warp on outer hair & saree trail) -->
+          <div class="s10-bride-wrap">
+            <canvas width="652" height="516" class="s10-bride-canvas" aria-label="Aindrila"></canvas>
+          </div>
+
+          <!-- Left potted plant (p10-plant-5, behind bike; pot static, leaves sway) -->
+          <div class="s10-plant s10-plant--pot-left" aria-hidden="true">
+            <img src="/assets/p10-plant-5.webp" alt="" class="s10-pot-base s10-pot-base--left" loading="eager" />
+            <img src="/assets/p10-plant-5.webp" alt="" class="s10-pot-leaves s10-pot-leaves--left" loading="eager" />
+          </div>
+
+          <!-- Right potted plant (p10-plant-4; pot static, leaves sway) -->
+          <div class="s10-plant s10-plant--pot-right" aria-hidden="true">
+            <img src="/assets/p10-plant-4.webp" alt="" class="s10-pot-base s10-pot-base--right" loading="eager" />
+            <img src="/assets/p10-plant-4.webp" alt="" class="s10-pot-leaves s10-pot-leaves--right" loading="eager" />
+          </div>
+
+          <!-- Scene 10 Text (no language toggle on this scene; appears after bike stops) -->
+          <div class="s10-text-layer">
+            <div class="s10-title-block">
+              <h2 class="s10-bn-title">|| আমাদের বিয়ে ||</h2>
+              <p class="s10-names">
+                <span>AINDRILA</span>
+                <span class="s10-amp">&amp;</span>
+                <span>PABITRARGHYA</span>
+              </p>
+              <p class="s10-quote">
+                Two hearts, one promise—we are tying the knot to spend the rest of our lives together.
+              </p>
+            </div>
+
+            <div class="s10-details-block">
+              <p class="s10-excited">We are very excited to share these special days with you.</p>
+              <p class="s10-event">Wedding Ceremony : 12th February 2027</p>
+              <p class="s10-event">Reception : 14th February 2027 at Anur Bari</p>
+            </div>
+          </div>
         </div>
 
         <!-- Groom riding in on motorbike (bike-body on top, two bike-wheel copies behind) -->
@@ -296,25 +345,12 @@
           </div>
         </div>
 
-        <!-- Scene 10 Text (no language toggle on this scene; appears after bike stops) -->
-        <div class="s10-text-layer">
-          <div class="s10-title-block">
-            <h2 class="s10-bn-title">|| আমাদের বিয়ে ||</h2>
-            <p class="s10-names">
-              <span>AINDRILA</span>
-              <span class="s10-amp">&amp;</span>
-              <span>PABITRARGHYA</span>
-            </p>
-            <p class="s10-quote">
-              Two hearts, one promise—we are tying the knot to spend the rest of our lives together.
-            </p>
-          </div>
-
-          <div class="s10-details-block">
-            <p class="s10-excited">We are very excited to share these special days with you.</p>
-            <p class="s10-event">Wedding Ceremony : 12th February 2027</p>
-            <p class="s10-event">Reception : 14th February 2027 at Anur Bari</p>
-          </div>
+        <!-- Bottom clumps (p10-plant-1, bottom-right & mirrored bottom-left, rotate from base) -->
+        <div class="s10-plant s10-plant--bottom-left" aria-hidden="true">
+          <img src="/assets/p10-plant-1.webp" alt="" class="s10-plant-sway s10-plant-sway--bl" loading="eager" />
+        </div>
+        <div class="s10-plant s10-plant--bottom-right" aria-hidden="true">
+          <img src="/assets/p10-plant-1.webp" alt="" class="s10-plant-sway s10-plant-sway--br" loading="eager" />
         </div>
       </div>
     </section>
