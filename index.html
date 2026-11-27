@@ -34,6 +34,9 @@
   <!-- Shared Looping Petal Layer (visible on Scenes 3–9, 11, 14) -->
   <div id="petal-layer" class="petal-layer" aria-hidden="true"></div>
 
+  <!-- Floating Language Toggle (visible only on Scenes 9, 11, 13, 14) -->
+  <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Switch to English">English</button>
+
   <!-- Main Scroll Container -->
   <main id="app" class="app">
     <!-- Pinned Group [1–2] -->
@@ -423,18 +426,44 @@
     <!-- Pinned Group [12–13] -->
     <section id="group-12-13" class="pinned-group pinned-group--12-13" data-petals="false">
       <div class="pinned-stage">
-        <article id="scene-12" class="scene scene--12" data-scene="12">
-          <div class="scene__inner placeholder-box placeholder-box--house">
-            <span class="placeholder-tag">Scene 12</span>
-            <h2>House Illustration (অনুর বাড়ি)</h2>
-            <p>Pinned group [12–13] • Own illustration background • No petals</p>
+        <article id="scene-12" class="scene scene--12 is-active" data-scene="12">
+          <div class="s12-house-wrap">
+            <img src="/assets/house.webp" alt="অনুর বাড়ি" class="s12-house-img" loading="lazy" />
           </div>
         </article>
+
         <article id="scene-13" class="scene scene--13" data-scene="13">
-          <div class="scene__inner placeholder-box placeholder-box--house">
-            <span class="placeholder-tag">Scene 13</span>
-            <h2>প্রীতিভোজ (বৌভাত) — অনুর বাড়ি &amp; Map</h2>
-            <p>Pinned group [12–13] • No petals • Language toggle visible</p>
+          <div class="scene__inner scene13-stage">
+            <div class="s13-pill" data-i18n="s13.pill">প্রীতিভোজ (বৌভাত)</div>
+
+            <div class="s13-card">
+              <h2 class="s13-venue-title" data-i18n="s13.venueTitle">অনুর বাড়ি</h2>
+              <img src="/assets/divider.webp" alt="" class="s13-divider" loading="lazy" />
+
+              <div class="s13-grid">
+                <div class="s13-map-col">
+                  <a
+                    id="s13-map-link"
+                    href="https://maps.app.goo.gl/zz4EkPCmiX9YhYqv7?g_st=aw"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="s13-map-link"
+                    aria-label="Open Anur Bari location in Google Maps"
+                  >
+                    <img src="/assets/map.webp" alt="Map to Anur Bari, Manirampur, Hooghly" class="s13-map-img" loading="lazy" />
+                  </a>
+                  <p class="s13-map-caption">Click on the map to see your distance</p>
+                </div>
+
+                <div class="s13-details">
+                  <p data-i18n="s13.date">তারিখ: ১৪ই ফেব্রুয়ারি, ২০২৭ (ইংরেজি) | ১লা ফাল্গুন, ১৪৩৩ (বাংলা)</p>
+                  <p data-i18n="s13.day">দিন: রবিবার</p>
+                  <p data-i18n="s13.addr1">ডাকঘর- মণিরামপুর,</p>
+                  <p data-i18n="s13.addr2">জেলা- হুগলি, পিন- ৭১২৩০৪</p>
+                  <p data-i18n="s13.directions">(পথনির্দেশ: বেগমপুর রেল স্টেশন থেকে টোটোযোগে মাত্র ১০ মিনিটের পথ)</p>
+                </div>
+              </div>
+            </div>
           </div>
         </article>
       </div>
@@ -442,10 +471,35 @@
 
     <!-- Normal Section [14] -->
     <section id="scene-14" class="section-scene scene--14" data-scene="14" data-petals="true">
-      <div class="scene__inner placeholder-box">
-        <span class="placeholder-tag">Scene 14</span>
-        <h2>আসবেন কিন্তু! — Live Countdown</h2>
-        <p>Normal scroll section • Petals active • Language toggle visible</p>
+      <div class="scene__inner scene14-stage">
+        <h2 class="s14-heading" data-i18n="s14.heading">আসবেন কিন্তু!</h2>
+        <img src="/assets/divider.webp" alt="" class="s14-divider" loading="lazy" />
+
+        <div class="s14-couple-wrap">
+          <img src="/assets/couple.webp" alt="Pabitrarghya &amp; Aindrila" class="s14-couple-img" loading="lazy" />
+        </div>
+
+        <p id="s14-sub" class="s14-sub" data-i18n="s14.sub">আর মাত্র</p>
+        <p id="s14-status" class="s14-status" hidden></p>
+
+        <div class="s14-countdown-card" aria-live="off">
+          <div class="s14-unit">
+            <div class="s14-box"><span id="cd-days" class="s14-num">০০</span></div>
+            <span class="s14-label" data-i18n="s14.days">দিন</span>
+          </div>
+          <div class="s14-unit">
+            <div class="s14-box"><span id="cd-hours" class="s14-num">০০</span></div>
+            <span class="s14-label" data-i18n="s14.hours">ঘণ্টা</span>
+          </div>
+          <div class="s14-unit">
+            <div class="s14-box"><span id="cd-minutes" class="s14-num">০০</span></div>
+            <span class="s14-label" data-i18n="s14.minutes">মিনিট</span>
+          </div>
+          <div class="s14-unit">
+            <div class="s14-box"><span id="cd-seconds" class="s14-num">০০</span></div>
+            <span class="s14-label" data-i18n="s14.seconds">সেকেন্ড</span>
+          </div>
+        </div>
       </div>
     </section>
   </main>

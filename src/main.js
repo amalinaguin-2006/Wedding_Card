@@ -5,6 +5,7 @@ import { CONFIG } from './config.js';
 import { initScenes1to2, initScene3 } from './scenes/scenes1to3.js';
 import { initScenes4to9 } from './scenes/scenes4to9.js';
 import { initScenes10to11 } from './scenes/scenes10to11.js';
+import { initScenes12to14 } from './scenes/scenes12to14.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -121,17 +122,6 @@ function initPetalLayer() {
 }
 
 /**
- * Helper to switch the active scene inside a pinned group.
- */
-function activateSceneInGroup(groupEl, sceneNumber) {
-  const scenes = groupEl.querySelectorAll('.scene');
-  scenes.forEach((el) => {
-    const num = Number(el.dataset.scene);
-    el.classList.toggle('is-active', num === sceneNumber);
-  });
-}
-
-/**
  * Phase 1 ScrollTrigger skeleton:
  * - Pinned group [1–2]
  * - Normal section [3]
@@ -141,8 +131,6 @@ function activateSceneInGroup(groupEl, sceneNumber) {
  * - Normal section [14]
  */
 function initScrollStructure(petals) {
-  const group1213 = document.getElementById('group-12-13');
-
   // Scenes 1–2 (pinned group) & Scene 3 (normal section)
   initScenes1to2(petals, prefersReducedMotion);
   initScene3(petals, prefersReducedMotion);
@@ -153,37 +141,8 @@ function initScrollStructure(petals) {
   // Scenes 10 & 11 (normal scroll sections)
   initScenes10to11(petals, prefersReducedMotion);
 
-  // Group [12–13]
-  if (group1213) {
-    ScrollTrigger.create({
-      trigger: group1213,
-      start: 'top top',
-      end: '+=160%',
-      pin: true,
-      scrub: true,
-      onUpdate: (self) => {
-        const active = self.progress < 0.45 ? 12 : 13;
-        activateSceneInGroup(group1213, active);
-      },
-      onToggle: (self) => {
-        if (self.isActive) petals?.setVisible(false);
-      },
-    });
-  }
-
-  // Normal sections petal visibility triggers (exact 50% viewport boundary, zero overlap)
-  // Note: #scene-3, #scene-10, #scene-11 manage their own triggers
-  document.querySelectorAll('.section-scene:not(#scene-3):not(#scene-10):not(#scene-11)').forEach((section) => {
-    const hasPetals = section.dataset.petals === 'true';
-    ScrollTrigger.create({
-      trigger: section,
-      start: 'top 50%',
-      end: 'bottom 50%',
-      onToggle: (self) => {
-        if (self.isActive) petals?.setVisible(hasPetals);
-      },
-    });
-  });
+  // Scenes 12–14 (pinned group [12–13], Scene 14 countdown, & language toggle)
+  initScenes12to14(petals, prefersReducedMotion);
 }
 
 async function init() {
