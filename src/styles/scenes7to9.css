@@ -232,7 +232,7 @@
 }
 
 .s9-crown--topor {
-  top: 0;
+  top: -8px;
   width: clamp(54px, 14vw, 80px);
 }
 
@@ -349,6 +349,7 @@
     padding-top: 4.5rem;
   }
   .s9-crown--topor {
+    top: -16px;
     width: 84px;
   }
   .s9-crown--mukut {

@@ -206,7 +206,7 @@ export function initScenes4to9(petals, prefersReducedMotion) {
   // --- SCENE 9: 45° Long Cloths -> Large Knot -> Shrink -> Heading, Families & Boxes (7.48 -> 10.2) ---
   const isMobile = window.innerWidth < 1024;
   const s9OverflowY = isMobile
-    ? Math.max(0, s9Grid.scrollHeight - window.innerHeight + 28)
+    ? Math.max(0, s9Grid.scrollHeight - window.innerHeight + 56)
     : 0;
 
   tl.set(scene9, { autoAlpha: 1 }, 7.46)
