@@ -100,10 +100,10 @@ html[data-lang="en"] .s11-scroll__body {
    Pinned Group [12–13]: House Illustration & Boubhat Venue + Clickable Map
    ========================================================================== */
 .pinned-group--12-13 {
-  background: linear-gradient(180deg, #cbe6ee 0%, #dbeff4 55%, #b5b293 100%);
+  background: var(--bg-cream);
 }
 
-.scene--12 {
+.pinned-stage .scene--12 {
   z-index: 1;
   padding: 0;
   opacity: 1;
@@ -118,10 +118,15 @@ html[data-lang="en"] .s11-scroll__body {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  will-change: opacity;
+  overflow: hidden;
 }
 
-.s12-house-img {
+.s12-house-backdrop {
+  display: none;
+}
+
+.s12-house-img,
+.s12-house-blur {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -131,14 +136,53 @@ html[data-lang="en"] .s11-scroll__body {
   pointer-events: none;
 }
 
+.s12-house-blur {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+  will-change: opacity;
+}
+
+.s12-cream-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: rgba(255, 244, 228, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+
 @media (min-width: 1024px) {
-  .s12-house-img {
+  .s12-house-backdrop {
+    display: block;
+    position: absolute;
+    inset: -4%;
+    width: 108%;
+    height: 108%;
+    object-fit: cover;
+    object-position: center bottom;
+    opacity: 0.45;
+    pointer-events: none;
+    user-select: none;
+  }
+  .s12-house-img,
+  .s12-house-blur {
+    position: relative;
+    z-index: 1;
     width: auto;
     max-width: 100%;
     height: 100svh;
     object-fit: contain;
     object-position: center bottom;
-    box-shadow: 0 0 60px rgba(30, 35, 25, 0.16);
+  }
+  .s12-house-blur {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    z-index: 2;
   }
 }
 

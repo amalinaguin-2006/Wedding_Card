@@ -93,7 +93,8 @@ export function initScenes12to14(petals, prefersReducedMotion) {
 
   // --- PINNED GROUP [12–13] ---
   if (group1213 && scene12 && scene13) {
-    const houseWrap = scene12.querySelector('.s12-house-wrap');
+    const houseBlur = scene12.querySelector('.s12-house-blur');
+    const creamOverlay = scene12.querySelector('.s12-cream-overlay');
     const pill = scene13.querySelector('.s13-pill');
     const card = scene13.querySelector('.s13-card');
     const mapLink = document.getElementById('s13-map-link');
@@ -106,14 +107,15 @@ export function initScenes12to14(petals, prefersReducedMotion) {
     let currentProgress1213 = 0;
 
     const sync1213 = () => {
-      const is13 = currentProgress1213 >= 0.4;
+      const is13 = currentProgress1213 >= 0.45;
       scene12.classList.toggle('is-active', !is13);
       scene13.classList.toggle('is-active', is13);
       setLangSceneActive('s13', group1213InView && is13);
     };
 
     if (prefersReducedMotion) {
-      gsap.set(houseWrap, { opacity: 0.28 });
+      gsap.set(houseBlur, { opacity: 1 });
+      gsap.set(creamOverlay, { opacity: 1 });
       gsap.set([pill, card], { autoAlpha: 1, y: 0 });
       ScrollTrigger.create({
         trigger: group1213,
@@ -135,7 +137,7 @@ export function initScenes12to14(petals, prefersReducedMotion) {
         scrollTrigger: {
           trigger: group1213,
           start: 'top top',
-          end: '+=160%',
+          end: '+=175%',
           pin: true,
           scrub: 0.6,
           onUpdate: (self) => {
@@ -150,23 +152,24 @@ export function initScenes12to14(petals, prefersReducedMotion) {
         },
       });
 
-      // Hold Scene 12 alone (0 -> 0.34), then fade house back and reveal Scene 13 pill & card
+      // Hold sharp house (0 -> 0.28), then gradually blur (8px pre-blurred copy) + 25% light cream overlay,
+      // then title box (pill) and details box (card) rise in sequentially
       tl1213
-        .to(houseWrap, { opacity: 0.28, duration: 0.22, ease: 'power1.inOut' }, 0.34)
+        .to([houseBlur, creamOverlay], { opacity: 1, duration: 0.24, ease: 'power1.inOut' }, 0.28)
         .fromTo(
           pill,
-          { y: -18, autoAlpha: 0 },
-          { y: 0, autoAlpha: 1, duration: 0.22, ease: 'power2.out' },
-          0.38
+          { y: 20, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.18, ease: 'power2.out' },
+          0.48
         )
         .fromTo(
           card,
-          { y: 24, autoAlpha: 0, scale: 0.97 },
-          { y: 0, autoAlpha: 1, scale: 1, duration: 0.26, ease: 'power2.out' },
-          0.42
+          { y: 26, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.22, ease: 'power2.out' },
+          0.58
         )
         // Hold still at the end so user can read and tap map before scrolling to Scene 14
-        .to({}, { duration: 0.32 }, 0.68);
+        .to({}, { duration: 0.24 }, 0.80);
     }
   }
 

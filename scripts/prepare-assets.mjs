@@ -169,6 +169,9 @@ async function run() {
     } else if (file === 'cloth-white.png') {
       await sharp(src).webp({ quality: 86, alphaQuality: 95 }).toFile(dest);
       await createExtendedCloth(src, path.join(OUT_ASSETS, 'cloth-white-long.webp'), 0.34, 0.44, 950);
+    } else if (file === 'house.png') {
+      await sharp(src).webp({ quality: 86, alphaQuality: 95 }).toFile(dest);
+      await sharp(src).blur(8).webp({ quality: 82 }).toFile(path.join(OUT_ASSETS, 'house-blur.webp'));
     } else {
       await sharp(src).webp({ quality: 86, alphaQuality: 95 }).toFile(dest);
     }

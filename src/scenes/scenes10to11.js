@@ -157,7 +157,9 @@ export function initScenes10to11(petals, prefersReducedMotion) {
     const rearWheel = scene10.querySelector('.s10-wheel--rear');
     const frontWheel = scene10.querySelector('.s10-wheel--front');
     const wheels = [rearWheel, frontWheel].filter(Boolean);
-    const titleBlock = scene10.querySelector('.s10-title-block');
+    const titleHeading = scene10.querySelector('.s10-bn-title');
+    const titleNames = scene10.querySelector('.s10-names');
+    const titleQuote = scene10.querySelector('.s10-quote');
     const detailsBlock = scene10.querySelector('.s10-details-block');
 
     // Weighted mesh warp for Bride (572x436 inside 652x516 padded canvas):
@@ -222,117 +224,84 @@ export function initScenes10to11(petals, prefersReducedMotion) {
       return Math.min(rawDeg, 1080);
     };
 
-    // Time-based 4.0s Groom Entry + Clockwise Wheel Rotation + Engine Bounce + Post-Stop Text Reveal
-    let entryTl = null;
-    let bounceTween = null;
-
-    const resetEntry = () => {
-      entryTl?.pause(0);
-      bounceTween?.pause(0);
-      if (prefersReducedMotion) {
-        gsap.set(groomWrap, { x: 0, autoAlpha: 1 });
-        gsap.set([titleBlock, detailsBlock], { autoAlpha: 1, y: 0 });
-      } else {
-        gsap.set(groomWrap, { x: '-115vw' });
-        gsap.set(wheels, { rotation: 0 });
-        gsap.set(chassis, { y: 0 });
-        gsap.set([titleBlock, detailsBlock], { autoAlpha: 0, y: 14 });
-      }
-    };
-
-    if (!prefersReducedMotion) {
-      bounceTween = gsap.to(chassis, {
-        y: -1.5,
-        duration: 0.14,
-        ease: 'sine.inOut',
-        yoyo: true,
-        repeat: -1,
-        paused: true,
-      });
-
-      entryTl = gsap.timeline({
-        paused: true,
-        onComplete: () => {
-          bounceTween?.pause(0);
-          gsap.set(chassis, { y: 0 });
+    // Scroll-controlled pinned Scene 10:
+    // 0.0 -> 0.62: groom rides in from off-screen left with synchronized wheels + staggered text reveal
+    // 0.62 -> 1.00: hold finished page (~60%+ extra scroll distance) before unpinning
+    if (prefersReducedMotion) {
+      gsap.set(groomWrap, { x: 0, autoAlpha: 1 });
+      gsap.set([titleHeading, titleNames, titleQuote, detailsBlock], { autoAlpha: 1, y: 0 });
+    } else {
+      const tl10 = gsap.timeline({
+        scrollTrigger: {
+          trigger: scene10,
+          start: 'top top',
+          end: '+=190%',
+          pin: true,
+          scrub: 0.5,
         },
       });
 
-      entryTl
+      tl10
         .fromTo(
           groomWrap,
           { x: '-115vw' },
-          { x: 0, duration: 4.0, ease: 'power2.out' },
+          { x: 0, duration: 0.62, ease: 'power2.out' },
           0
         )
         .fromTo(
           rearWheel,
           { rotation: 0 },
-          { rotation: () => getWheelRotationDeg(rearWheel), duration: 4.0, ease: 'power2.out' },
+          { rotation: () => getWheelRotationDeg(rearWheel), duration: 0.62, ease: 'power2.out' },
           0
         )
         .fromTo(
           frontWheel,
           { rotation: 0 },
-          { rotation: () => getWheelRotationDeg(frontWheel), duration: 4.0, ease: 'power2.out' },
+          { rotation: () => getWheelRotationDeg(frontWheel), duration: 0.62, ease: 'power2.out' },
           0
         )
         .fromTo(
-          titleBlock,
-          { autoAlpha: 0, y: 14 },
-          { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' },
-          3.85
+          [titleHeading, titleNames],
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, duration: 0.16, ease: 'power2.out' },
+          0.10
+        )
+        .fromTo(
+          titleQuote,
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, duration: 0.16, ease: 'power2.out' },
+          0.28
         )
         .fromTo(
           detailsBlock,
-          { autoAlpha: 0, y: 14 },
-          { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' },
-          4.0
-        );
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, duration: 0.18, ease: 'power2.out' },
+          0.44
+        )
+        // Hold finished Scene 10 for ~60%+ of viewport height before unpinning
+        .to({}, { duration: 0.45 }, 0.62);
     }
 
-    resetEntry();
+    // Petal visibility & ambient loop (hair, saree & plants) trigger
+    const scene10TriggerEl = scene10.parentElement?.classList.contains('pin-spacer')
+      ? scene10.parentElement
+      : scene10;
 
-    // Petal visibility trigger (exact 50% boundary)
     ScrollTrigger.create({
-      trigger: scene10,
+      trigger: scene10TriggerEl,
       start: 'top 50%',
       end: 'bottom 50%',
       onToggle: (self) => {
-        if (self.isActive) petals?.setVisible(false);
-      },
-    });
-
-    // Entry trigger: begins as soon as Scene 10 is ~60% visible; replays only after leaving & returning
-    ScrollTrigger.create({
-      trigger: scene10,
-      start: 'top 40%',
-      end: 'bottom 60%',
-      onEnter: () => {
-        if (!prefersReducedMotion) {
-          brideWarp.start();
-          plantTweens.forEach((tw) => tw.play());
-          bounceTween?.restart();
-          entryTl?.invalidate().restart();
+        if (self.isActive) {
+          petals?.setVisible(false);
+          if (!prefersReducedMotion) {
+            brideWarp.start();
+            plantTweens.forEach((tw) => tw.play());
+          }
+        } else if (!prefersReducedMotion) {
+          brideWarp.stop();
+          plantTweens.forEach((tw) => tw.pause());
         }
-      },
-      onEnterBack: () => {
-        if (!prefersReducedMotion) {
-          brideWarp.start();
-          plantTweens.forEach((tw) => tw.play());
-          bounceTween?.restart();
-          entryTl?.invalidate().restart();
-        }
-      },
-      onLeave: () => {
-        brideWarp.stop();
-        plantTweens.forEach((tw) => tw.pause());
-        resetEntry();
-      },
-      onLeaveBack: () => {
-        brideWarp.stop();
-        plantTweens.forEach((tw) => tw.pause());
-        resetEntry();
       },
     });
   }
