@@ -273,19 +273,23 @@
     <!-- Normal Section [10] -->
     <section id="scene-10" class="section-scene scene--10" data-scene="10" data-petals="false">
       <div class="s10-stage">
-        <img src="/assets/p10-background.webp" alt="" class="s10-bg" loading="lazy" />
+        <canvas class="s10-bg-canvas" aria-hidden="true"></canvas>
 
-        <!-- Bride leaning from the arched window -->
+        <!-- Bride leaning from the arched window (weighted mesh warp on outer hair & saree trail) -->
         <div class="s10-bride-wrap">
-          <img src="/assets/p10-bride.webp" alt="Aindrila" class="s10-bride" loading="lazy" />
+          <canvas width="500" height="500" class="s10-bride-canvas" aria-label="Aindrila"></canvas>
         </div>
 
-        <!-- Groom riding in on motorbike -->
+        <!-- Groom riding in on motorbike (masked wheel layers + chassis bounce) -->
         <div class="s10-groom-wrap">
-          <img src="/assets/p10-groom-bike.webp" alt="Pabitrarghya on motorbike" class="s10-groom-bike" loading="lazy" />
+          <div class="s10-bike-chassis">
+            <img src="/assets/p10-groom-bike.webp" alt="Pabitrarghya on motorbike" class="s10-groom-bike s10-groom-bike--body" loading="lazy" />
+            <img src="/assets/p10-groom-bike.webp" alt="" class="s10-groom-bike s10-wheel s10-wheel--rear" aria-hidden="true" loading="lazy" />
+            <img src="/assets/p10-groom-bike.webp" alt="" class="s10-groom-bike s10-wheel s10-wheel--front" aria-hidden="true" loading="lazy" />
+          </div>
         </div>
 
-        <!-- Scene 10 Text (no language toggle on this scene) -->
+        <!-- Scene 10 Text (no language toggle on this scene; appears after bike stops) -->
         <div class="s10-text-layer">
           <div class="s10-title-block">
             <h2 class="s10-bn-title">|| আমাদের বিয়ে ||</h2>

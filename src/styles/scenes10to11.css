@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Scene 10: Wall, Window, Bride, Motorbike Entry & Text (No Language Toggle)
+   Scene 10: Wall, Window, Bride (Mesh Warp), Motorbike Entry & Masked Wheels
    ========================================================================== */
 .scene--10 {
   background-color: #824b33;
@@ -9,20 +9,17 @@
 .s10-stage {
   position: relative;
   width: 100%;
-  max-width: 480px;
   height: 100svh;
-  max-height: 920px;
   margin: 0 auto;
   overflow: hidden;
 }
 
-.s10-bg {
+.s10-bg-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
+  display: block;
   pointer-events: none;
   user-select: none;
 }
@@ -30,14 +27,14 @@
 .s10-bride-wrap {
   position: absolute;
   top: 9.5%;
-  right: -3%;
-  width: 56%;
+  right: -1%;
+  width: 53%;
   z-index: 3;
   pointer-events: none;
   user-select: none;
 }
 
-.s10-bride {
+.s10-bride-canvas {
   display: block;
   width: 100%;
   height: auto;
@@ -45,19 +42,56 @@
 
 .s10-groom-wrap {
   position: absolute;
-  bottom: 10.5%;
+  bottom: 9.5%;
   left: 1%;
-  width: 122%;
+  width: 114%;
   z-index: 4;
   pointer-events: none;
   user-select: none;
-  will-change: transform, opacity;
+  will-change: transform;
+}
+
+.s10-bike-chassis {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 669 / 373;
+  will-change: transform;
 }
 
 .s10-groom-bike {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Punch out only the inner spoke circles so fenders, fork, exhaust & rider never rotate */
+.s10-groom-bike--body {
+  -webkit-mask-image:
+    radial-gradient(ellipse 6.3% 11.3% at 19.43% 80.70%, transparent 96%, #000 100%),
+    radial-gradient(ellipse 6.5% 11.65% at 50.90% 81.64%, transparent 96%, #000 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    radial-gradient(ellipse 6.3% 11.3% at 19.43% 80.70%, transparent 96%, #000 100%),
+    radial-gradient(ellipse 6.5% 11.65% at 50.90% 81.64%, transparent 96%, #000 100%);
+  mask-composite: intersect;
+}
+
+.s10-wheel {
+  will-change: transform;
+}
+
+.s10-wheel--rear {
+  clip-path: circle(7.8% at 19.43% 80.70%);
+  transform-origin: 19.43% 80.70%;
+}
+
+.s10-wheel--front {
+  clip-path: circle(8.05% at 50.90% 81.64%);
+  transform-origin: 50.90% 81.64%;
 }
 
 .s10-text-layer {
@@ -68,25 +102,26 @@
   color: #FFF4E4;
 }
 
+/* Mobile: stay strictly left of window shutter (<46%) */
 .s10-title-block {
   position: absolute;
-  top: 16%;
-  left: 5%;
-  width: 50%;
+  top: 15%;
+  left: 3%;
+  width: 42%;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.35rem;
   will-change: transform, opacity;
 }
 
 .s10-bn-title {
   font-family: var(--font-bengali);
-  font-size: clamp(1.15rem, 4.8vw, 1.65rem);
+  font-size: clamp(0.95rem, 4.1vw, 1.5rem);
   font-weight: 700;
   color: #FFF4E4;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
   white-space: nowrap;
 }
 
@@ -95,73 +130,100 @@
   flex-direction: column;
   align-items: center;
   font-family: var(--font-hand);
-  font-size: clamp(1.35rem, 5.2vw, 1.95rem);
+  font-size: clamp(1.12rem, 4.6vw, 1.85rem);
   font-weight: 600;
   line-height: 1.05;
   letter-spacing: 0.04em;
   color: #FFF4E4;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 .s10-amp {
   font-size: 0.9em;
-  margin: 0.08rem 0;
+  margin: 0.05rem 0;
 }
 
 .s10-quote {
   font-family: var(--font-english);
-  font-size: clamp(0.82rem, 3.2vw, 1.05rem);
+  font-size: clamp(0.7rem, 2.8vw, 0.98rem);
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.32;
   color: #FFF4E4;
-  margin-top: 0.35rem;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  margin-top: 0.25rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
+/* Mobile: clear of window, bride & bike */
 .s10-details-block {
   position: absolute;
-  top: 40%;
-  right: 4%;
+  top: 41%;
+  right: 3%;
   width: 44%;
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.48rem;
   will-change: transform, opacity;
 }
 
 .s10-excited,
 .s10-event {
   font-family: var(--font-english);
-  font-size: clamp(0.82rem, 3.2vw, 1.05rem);
+  font-size: clamp(0.7rem, 2.8vw, 0.98rem);
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.32;
   color: #FFF4E4;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
+/* Desktop (1024px+): Full-screen p10-desktop-background, no plain side bars */
 @media (min-width: 1024px) {
   .s10-stage {
+    width: 100%;
     max-width: none;
-    height: min(100svh, 920px);
-    aspect-ratio: 9 / 16;
-    width: auto;
-    overflow: visible;
+    height: 100svh;
+    max-height: none;
   }
-  .s10-bg {
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 7%, #000 93%, transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0%, #000 7%, #000 93%, transparent 100%);
+  /* Window opening in p10-desktop-background is around left 47.6%-64.6%, top 14%-39.5% */
+  .s10-bride-wrap {
+    top: 13.5%;
+    left: 44.5%;
+    right: auto;
+    width: clamp(205px, 19.5vw, 310px);
+  }
+  /* Groom & bike at lower left */
+  .s10-groom-wrap {
+    bottom: 6%;
+    left: 16%;
+    width: clamp(340px, 34vw, 520px);
+  }
+  /* Heading, names & first paragraph at upper left-centre */
+  .s10-title-block {
+    top: 15%;
+    left: 17%;
+    width: 24%;
+    gap: 0.5rem;
   }
   .s10-bn-title {
-    font-size: 1.75rem;
+    font-size: clamp(1.35rem, 1.8vw, 1.9rem);
   }
   .s10-names {
-    font-size: 2rem;
+    font-size: clamp(1.65rem, 2.2vw, 2.35rem);
   }
-  .s10-quote,
+  .s10-quote {
+    font-size: clamp(0.95rem, 1.15vw, 1.25rem);
+  }
+  /* Second paragraph & dates below the window towards centre */
+  .s10-details-block {
+    top: 46%;
+    left: 46%;
+    right: auto;
+    width: 26%;
+    gap: 0.65rem;
+  }
   .s10-excited,
   .s10-event {
-    font-size: 1.08rem;
+    font-size: clamp(0.95rem, 1.15vw, 1.25rem);
   }
 }
 
