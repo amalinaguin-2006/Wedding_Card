@@ -339,11 +339,11 @@ export function initScenes10to11(petals, prefersReducedMotion) {
 
   // --- SCENE 11 ---
   if (scene11) {
-    const heading = scene11.querySelector('.s11-heading');
-    const paper1 = scene11.querySelector('.s11-scroll--1 .s11-scroll__paper-clip');
-    const content1 = scene11.querySelector('.s11-scroll--1 .s11-scroll__content');
-    const paper2 = scene11.querySelector('.s11-scroll--2 .s11-scroll__paper-clip');
-    const content2 = scene11.querySelector('.s11-scroll--2 .s11-scroll__content');
+    const papers = scene11.querySelectorAll('.s11-scroll__paper-clip');
+    const contents = scene11.querySelectorAll('.s11-scroll__content');
+    const leftRollers = scene11.querySelectorAll('.s11-scroll__roller--left');
+    const rightRollers = scene11.querySelectorAll('.s11-scroll__roller--right');
+    const curlShadows = scene11.querySelectorAll('.s11-scroll__curl-shadow');
 
     ScrollTrigger.create({
       trigger: scene11,
@@ -355,53 +355,52 @@ export function initScenes10to11(petals, prefersReducedMotion) {
     });
 
     if (prefersReducedMotion) {
-      gsap.from([heading, scene11.querySelectorAll('.s11-scroll')], {
-        autoAlpha: 0,
-        duration: 0.4,
-        scrollTrigger: {
-          trigger: scene11,
-          start: 'top 75%',
-          end: 'top 35%',
-          scrub: true,
-        },
-      });
+      gsap.set(papers, { clipPath: 'inset(0 12% 0 12%)' });
+      gsap.set(contents, { clipPath: 'inset(0 0% 0 0%)' });
+      gsap.set([leftRollers, rightRollers], { xPercent: 0, scaleX: 1 });
+      gsap.set(curlShadows, { opacity: 0.45 });
     } else {
       const tl11 = gsap.timeline({
         scrollTrigger: {
           trigger: scene11,
-          start: 'top 80%',
-          end: 'center center',
+          start: 'top top',
+          end: '+=85%',
+          pin: true,
           scrub: 0.6,
         },
       });
 
+      // Both scrolls start closed (rollers touching at centre) and open simultaneously on scroll
       tl11
-        .from(heading, { y: -14, autoAlpha: 0, duration: 0.18 }, 0)
-        // Scroll 1 unrolls from center outward
         .fromTo(
-          paper1,
-          { clipPath: 'inset(0 44% 0 44%)' },
-          { clipPath: 'inset(0 0% 0 0%)', duration: 0.38, ease: 'power2.out' },
-          0.14
+          leftRollers,
+          { xPercent: 33.5, scaleX: 0.94 },
+          { xPercent: 0, scaleX: 1, duration: 1, ease: 'power1.inOut' },
+          0
         )
         .fromTo(
-          content1,
+          rightRollers,
+          { xPercent: -32.5, scaleX: 0.94 },
+          { xPercent: 0, scaleX: 1, duration: 1, ease: 'power1.inOut' },
+          0
+        )
+        .fromTo(
+          papers,
           { clipPath: 'inset(0 50% 0 50%)' },
-          { clipPath: 'inset(0 0% 0 0%)', duration: 0.36, ease: 'power2.out' },
-          0.16
-        )
-        // Scroll 2 unrolls from center outward
-        .fromTo(
-          paper2,
-          { clipPath: 'inset(0 44% 0 44%)' },
-          { clipPath: 'inset(0 0% 0 0%)', duration: 0.38, ease: 'power2.out' },
-          0.54
+          { clipPath: 'inset(0 12% 0 12%)', duration: 1, ease: 'power1.inOut' },
+          0
         )
         .fromTo(
-          content2,
+          contents,
           { clipPath: 'inset(0 50% 0 50%)' },
-          { clipPath: 'inset(0 0% 0 0%)', duration: 0.36, ease: 'power2.out' },
-          0.56
+          { clipPath: 'inset(0 18% 0 18%)', duration: 1, ease: 'power1.inOut' },
+          0
+        )
+        .fromTo(
+          curlShadows,
+          { opacity: 0.95 },
+          { opacity: 0.45, duration: 1, ease: 'power1.inOut' },
+          0
         );
     }
   }
