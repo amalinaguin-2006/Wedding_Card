@@ -32,7 +32,7 @@ export function initScenes4to9(petals, prefersReducedMotion) {
   // Start with Scene 4 visible when group enters, others hidden
   gsap.set([scene4b, scene5, scene6, scene7, scene8, scene9], { autoAlpha: 0 });
   gsap.set(scene4, { autoAlpha: 1 });
-  gsap.set(familyCorner, { autoAlpha: 0 });
+  gsap.set(familyCorner, { autoAlpha: 0, xPercent: -50, yPercent: -50 });
 
   const tl = gsap.timeline({
     scrollTrigger: {
@@ -105,9 +105,9 @@ export function initScenes4to9(petals, prefersReducedMotion) {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const isDesktop = vw >= 1024;
-    const targetScale = isDesktop ? 0.52 : 0.48;
-    const xOffset = isDesktop ? -vw * 0.36 : -vw * 0.24;
-    const yOffset = isDesktop ? -vh * 0.34 : -vh * 0.415;
+    const targetScale = isDesktop ? 0.52 : 0.36;
+    const xOffset = isDesktop ? -vw * 0.36 : -vw * 0.27;
+    const yOffset = isDesktop ? -vh * 0.34 : -vh * 0.405;
     return { x: xOffset, y: yOffset, scale: targetScale };
   };
 
@@ -168,13 +168,15 @@ export function initScenes4to9(petals, prefersReducedMotion) {
     .to([s5Groom, s5Name, s5Suffix], { autoAlpha: 0, duration: 0.2 }, 4.37)
     .fromTo(
       familyCorner,
-      { autoAlpha: 0, scale: 0.85, x: 0, y: 0, filter: 'blur(0px)' },
-      { autoAlpha: 1, scale: 1, x: 0, y: 0, filter: 'blur(0px)', duration: 0.25, ease: 'power2.out' },
+      { autoAlpha: 0, scale: 0.85, xPercent: -50, yPercent: -50, x: 0, y: 0, filter: 'blur(0px)' },
+      { autoAlpha: 1, scale: 1, xPercent: -50, yPercent: -50, x: 0, y: 0, filter: 'blur(0px)', duration: 0.25, ease: 'power2.out' },
       4.44
     )
     .to(
       familyCorner,
       {
+        xPercent: -50,
+        yPercent: -50,
         x: corner.x,
         y: corner.y,
         scale: corner.scale,

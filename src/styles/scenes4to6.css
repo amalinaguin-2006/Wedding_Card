@@ -159,13 +159,13 @@
    Scene 6: Bride's Parents (with Groom's Family at upper-left)
    ========================================================================== */
 .scene6-stage {
-  padding-top: clamp(7.25rem, 21svh, 11rem);
+  padding-top: clamp(9.5rem, 25svh, 14rem);
   justify-content: flex-start;
   gap: clamp(0.3rem, 1svh, 0.75rem);
 }
 
 .parents-grid--s6 .parent-img {
-  height: clamp(190px, 37svh, 340px);
+  height: clamp(170px, 33svh, 300px);
 }
 
 .s6-only {
