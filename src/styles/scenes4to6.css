@@ -64,6 +64,38 @@
 }
 
 /* ==========================================================================
+   Scene 4B: Groom's Elder Brother (matches Scene 4/5 typography & groom scale)
+   ========================================================================== */
+.scene4b-stage {
+  justify-content: center;
+  gap: clamp(0.45rem, 1.5svh, 1rem);
+}
+
+.s4b-brother-frame {
+  position: relative;
+  width: 100%;
+  height: clamp(270px, 50svh, 450px);
+  will-change: transform, opacity;
+}
+
+.s4b-brother-img {
+  position: absolute;
+  bottom: 2.1%;
+  left: 50%;
+  height: 93%;
+  width: auto;
+  max-width: none;
+  transform: translateX(-50%);
+  pointer-events: none;
+  user-select: none;
+}
+
+.s4b-role {
+  font-size: clamp(1.85rem, 8.2vw, 3.6rem);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
    Scene 5: Groom + Persistent Family Corner
    ========================================================================== */
 .scene5-stage {

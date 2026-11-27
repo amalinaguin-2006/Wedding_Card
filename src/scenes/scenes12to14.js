@@ -192,8 +192,12 @@ export function initScenes12to14(petals, prefersReducedMotion) {
       setLangSceneActive('s9', group49Active && scene9.classList.contains('is-active'));
     };
 
+    const group49TriggerEl = group49.parentElement?.classList.contains('pin-spacer')
+      ? group49.parentElement
+      : group49;
+
     ScrollTrigger.create({
-      trigger: group49,
+      trigger: group49TriggerEl,
       start: 'top 50%',
       end: 'bottom 50%',
       onToggle: (self) => {

@@ -25,7 +25,7 @@
 ## 5. Scroll behaviour
 - All entrances and transitions are scrubbed by scroll and reverse when scrolling up.
 - Only ambient loops run on their own: petals, butterflies, sparkles, chakra, trunks, leaves, hair.
-- Pinned groups (scenes change in place): [1-2], [4-5-6-7-8-9].
+- Pinned groups (scenes change in place): [1-2], [4-4B-5-6-7-8-9].
 - [3], [10], [11], [14] are separate sections that scroll in normally.
 - [12-13] is one pinned group.
 - Each scene must hold still long enough to be read before the next transition starts.
@@ -42,6 +42,9 @@ Text: মহাশয়/ মহাশয়া, | আগামী, | 12 · 02 �
 
 **4.** Groom's father pans in from the left, then his name; then এবং; then the mother pans in from the right with her name; then জ্যেষ্ঠপুত্র.
 Text: শ্রী পঙ্কজ চক্রবর্তী | এবং | শ্রীমতী অনুশ্রী চক্রবর্তী | জ্যেষ্ঠপুত্র
+
+**4B.** Elder brother grows outward from the centre (gentle breathe-out zoom) matching Scene 5 groom character height and baseline, then Line 1 (parents' name size), then Line 2 (matches "জ্যেষ্ঠপুত্র", single line on mobile). Holds to read, then fades out completely before Scene 5 enters.
+Text: অভ্রনীল চক্রবর্তী-র | জ্যেষ্ঠ ভ্রাতা (দাদা)
 
 **5.** Groom grows outward from the centre (breathe-out zoom), then his name, then the suffix. Then the groom's family picture appears, shrinks to the upper left and becomes slightly blurred and faded.
 Text: শ্রীমান পবিত্রার্ঘ্য চক্রবর্তী | -এর সহিত
