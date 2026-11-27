@@ -273,12 +273,18 @@
     <!-- Normal Section [10] -->
     <section id="scene-10" class="section-scene scene--10" data-scene="10" data-petals="false">
       <div class="s10-stage">
-        <!-- Corner garlands (p10-plant-2, top-left & mirrored top-right) -->
+        <!-- Corner garlands (mobile: p10-plant-2; desktop: p10-garland-left & p10-garland-right) -->
         <div class="s10-plant s10-plant--corner-tl" aria-hidden="true">
-          <img src="/assets/p10-plant-2.webp" alt="" class="s10-plant-sway s10-plant-sway--tl" loading="eager" />
+          <picture class="s10-plant-sway s10-plant-sway--tl">
+            <source media="(min-width: 1024px)" srcset="/assets/p10-garland-left.webp" />
+            <img src="/assets/p10-plant-2.webp" alt="" loading="eager" />
+          </picture>
         </div>
         <div class="s10-plant s10-plant--corner-tr" aria-hidden="true">
-          <img src="/assets/p10-plant-2.webp" alt="" class="s10-plant-sway s10-plant-sway--tr" loading="eager" />
+          <picture class="s10-plant-sway s10-plant-sway--tr">
+            <source media="(min-width: 1024px)" srcset="/assets/p10-garland-right.webp" />
+            <img src="/assets/p10-plant-2.webp" alt="" loading="eager" />
+          </picture>
         </div>
 
         <!-- Background-locked frame (keeps mobile window, bride, window plant & text aligned on all phones) -->

@@ -36,9 +36,9 @@
 
 .s10-bride-wrap {
   position: absolute;
-  top: 13.5%;
-  left: 65%;
-  width: 35%;
+  top: 11%;
+  left: 62.5%;
+  width: 68%;
   z-index: 3;
   pointer-events: none;
   user-select: none;
@@ -126,6 +126,7 @@
 
 .s10-plant-sway,
 .s10-pot-leaves {
+  display: block;
   will-change: transform;
 }
 
@@ -153,7 +154,7 @@
 /* p10-plant-3: Hanging plant in window (clear of bride's face) */
 .s10-plant--window {
   top: 11.5%;
-  left: 86%;
+  left: 88%;
   width: 7.5%;
   z-index: 2;
 }
@@ -289,7 +290,7 @@
 /* Mobile: clear of window, bride & bike */
 .s10-details-block {
   position: absolute;
-  top: 39%;
+  top: 40%;
   right: 4%;
   width: 46%;
   text-align: center;
@@ -337,9 +338,22 @@
     width: clamp(442px, 44vw, 676px);
   }
   /* Desktop plant positions */
-  .s10-plant--corner-tl,
+  .s10-plant--corner-tl {
+    left: 0%;
+    top: 0%;
+    width: 37.28%;
+    height: auto;
+  }
   .s10-plant--corner-tr {
-    width: clamp(200px, 19vw, 340px);
+    left: 64.03%;
+    right: auto;
+    top: 0%;
+    width: 35.97%;
+    height: auto;
+    transform: none;
+  }
+  .s10-plant-sway--tr {
+    transform-origin: 100% 0%;
   }
   .s10-plant--window {
     top: 14.5%;
@@ -358,14 +372,15 @@
   }
   .s10-plant--bottom-left {
     bottom: -1%;
-    left: 1%;
-    width: clamp(140px, 12vw, 220px);
+    left: -4%;
+    width: 12.5%;
     z-index: 5;
   }
   .s10-plant--bottom-right {
     bottom: -1%;
-    right: 1%;
-    width: clamp(140px, 12vw, 220px);
+    left: 92%;
+    right: auto;
+    width: 12.5%;
     z-index: 5;
   }
   /* Heading, names & first paragraph at upper left-centre */

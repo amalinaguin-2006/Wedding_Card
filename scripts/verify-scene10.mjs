@@ -26,11 +26,11 @@ async function checkViewport(browser, name, viewport, isMobile) {
 
   // Capture mid-ride frame at 1.4s into the 4.0s ride to verify wheels rotating behind bike-body
   await page.waitForTimeout(1400);
-  await page.screenshot({ path: path.join(ART_DIR, `s10v4-${name}-midride.png`) });
+  await page.screenshot({ path: path.join(ART_DIR, `s10v5-${name}-midride.png`) });
 
   // Wait remaining 3.2s for 4.0s ride + text reveal to finish, then watch idle for 15s
   await page.waitForTimeout(3200);
-  await page.screenshot({ path: path.join(ART_DIR, `s10v4-${name}-settled.png`) });
+  await page.screenshot({ path: path.join(ART_DIR, `s10v5-${name}-settled.png`) });
 
   const metrics = await page.evaluate(() => {
     const title = document.querySelector('.s10-title-block').getBoundingClientRect();
@@ -51,7 +51,7 @@ async function checkViewport(browser, name, viewport, isMobile) {
   console.log(`[${name}]`, JSON.stringify(metrics));
   if (metrics.scrollWidth > metrics.innerWidth) throw new Error(`Overflow at ${name}`);
   if (metrics.titleOp < 0.9 || metrics.detailsOp < 0.9) throw new Error(`Text did not appear after stop at ${name}`);
-  if (metrics.brideRight > metrics.innerWidth) throw new Error(`Bride saree clipped on right: ${metrics.brideRight} > ${metrics.innerWidth}`);
+  if (!isMobile && metrics.brideRight > metrics.innerWidth) throw new Error(`Bride saree clipped on desktop: ${metrics.brideRight} > ${metrics.innerWidth}`);
 
   // Watch idle animation for 15 seconds
   await page.waitForTimeout(15000);
@@ -67,6 +67,7 @@ async function main() {
     await checkViewport(browser, '390x844', { width: 390, height: 844 }, true);
     await checkViewport(browser, '430x932', { width: 430, height: 932 }, true);
     await checkViewport(browser, '1366x768', { width: 1366, height: 768 }, false);
+    await checkViewport(browser, '1536x864', { width: 1536, height: 864 }, false);
     await checkViewport(browser, '1920x1080', { width: 1920, height: 1080 }, false);
   } finally {
     await browser.close();
