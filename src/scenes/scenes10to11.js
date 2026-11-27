@@ -393,7 +393,7 @@ export function initScenes10to11(petals, prefersReducedMotion) {
         .fromTo(
           contents,
           { clipPath: 'inset(0 50% 0 50%)' },
-          { clipPath: 'inset(0 18% 0 18%)', duration: 1, ease: 'power1.inOut' },
+          { clipPath: 'inset(0 16.5% 0 16.5%)', duration: 1, ease: 'power1.inOut' },
           0
         )
         .fromTo(

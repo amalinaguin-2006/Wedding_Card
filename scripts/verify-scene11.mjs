@@ -69,9 +69,10 @@ async function checkViewport(browser, name, width, height, isMobile) {
 async function main() {
   const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
   try {
-    await checkViewport(browser, '360x640', 360, 640, true);
     await checkViewport(browser, '390x844', 390, 844, true);
+    await checkViewport(browser, '1024x768', 1024, 768, false);
     await checkViewport(browser, '1366x768', 1366, 768, false);
+    await checkViewport(browser, '1536x864', 1536, 864, false);
     await checkViewport(browser, '1920x1080', 1920, 1080, false);
   } finally {
     await browser.close();

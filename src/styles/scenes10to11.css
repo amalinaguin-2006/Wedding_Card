@@ -553,32 +553,42 @@
   margin-top: 0.16rem;
 }
 
+.s11-date-break {
+  display: none;
+}
+
 /* Desktop (1024px+): Two scrolls side by side */
 @media (min-width: 1024px) {
   .scene11-stage {
     justify-content: center;
-    padding-top: 1.5rem;
-    gap: 1.5rem;
+    padding-top: 1.25rem;
+    gap: 1.4rem;
   }
   .s11-scrolls {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2.5rem;
-    max-width: 1000px;
+    gap: clamp(1.25rem, 2.5vw, 2.5rem);
+    max-width: min(1120px, 92vw);
     align-items: center;
   }
   .s11-scroll {
-    max-width: 475px;
+    max-width: 530px;
     margin: 0 auto;
   }
   .s11-scroll__content {
-    padding: 1.45rem 17.5% 1.25rem;
+    padding: clamp(1.1rem, 2vw, 1.6rem) 25% clamp(1rem, 1.8vw, 1.35rem);
   }
   .s11-scroll__title {
-    font-size: 1.75rem;
+    font-size: clamp(1.45rem, 1.8vw, 1.85rem);
   }
   .s11-scroll__body {
-    font-size: 0.86rem;
+    font-size: clamp(0.72rem, 0.9vw, 0.88rem);
     line-height: 1.4;
+  }
+  .s11-date-sep {
+    display: none;
+  }
+  .s11-date-break {
+    display: inline;
   }
 }
