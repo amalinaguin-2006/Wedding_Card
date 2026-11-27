@@ -124,31 +124,27 @@
   height: auto;
 }
 
+.s10-plant-static {
+  display: block;
+}
+
 .s10-plant-sway,
 .s10-pot-leaves {
   display: block;
   will-change: transform;
 }
 
-/* p10-plant-2: Corner garlands */
+/* Mobile: one large static garland top-left (behind text), top-right removed */
 .s10-plant--corner-tl {
   top: 0;
-  left: 0;
-  width: 33%;
-  z-index: 5;
+  left: -3%;
+  width: 62%;
+  height: auto;
+  z-index: 2;
 }
 
 .s10-plant--corner-tr {
-  top: 0;
-  right: 0;
-  width: 33%;
-  z-index: 5;
-  transform: scaleX(-1);
-}
-
-.s10-plant-sway--tl,
-.s10-plant-sway--tr {
-  transform-origin: 0% 0%;
+  display: none;
 }
 
 /* p10-plant-3: Hanging plant in window (clear of bride's face) */
@@ -343,17 +339,17 @@
     top: 0%;
     width: 37.28%;
     height: auto;
+    z-index: 4;
   }
   .s10-plant--corner-tr {
+    display: block;
     left: 64.03%;
     right: auto;
     top: 0%;
     width: 35.97%;
     height: auto;
     transform: none;
-  }
-  .s10-plant-sway--tr {
-    transform-origin: 100% 0%;
+    z-index: 4;
   }
   .s10-plant--window {
     top: 14.5%;

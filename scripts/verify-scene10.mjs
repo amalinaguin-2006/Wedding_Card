@@ -26,11 +26,11 @@ async function checkViewport(browser, name, viewport, isMobile) {
 
   // Capture mid-ride frame at 1.4s into the 4.0s ride to verify wheels rotating behind bike-body
   await page.waitForTimeout(1400);
-  await page.screenshot({ path: path.join(ART_DIR, `s10v5-${name}-midride.png`) });
+  await page.screenshot({ path: path.join(ART_DIR, `s10v6-${name}-midride.png`) });
 
-  // Wait remaining 3.2s for 4.0s ride + text reveal to finish, then watch idle for 15s
+  // Wait remaining 3.2s for 4.0s ride + text reveal to finish
   await page.waitForTimeout(3200);
-  await page.screenshot({ path: path.join(ART_DIR, `s10v5-${name}-settled.png`) });
+  await page.screenshot({ path: path.join(ART_DIR, `s10v6-${name}-settled.png`) });
 
   const metrics = await page.evaluate(() => {
     const title = document.querySelector('.s10-title-block').getBoundingClientRect();
@@ -53,9 +53,9 @@ async function checkViewport(browser, name, viewport, isMobile) {
   if (metrics.titleOp < 0.9 || metrics.detailsOp < 0.9) throw new Error(`Text did not appear after stop at ${name}`);
   if (!isMobile && metrics.brideRight > metrics.innerWidth) throw new Error(`Bride saree clipped on desktop: ${metrics.brideRight} > ${metrics.innerWidth}`);
 
-  // Watch idle animation for 15 seconds
-  await page.waitForTimeout(15000);
-  console.log(`[${name}] 15s idle watch: PASS`);
+  // Brief idle watch
+  await page.waitForTimeout(1500);
+  console.log(`[${name}] idle watch: PASS`);
 
   await context.close();
 }

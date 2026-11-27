@@ -144,8 +144,8 @@ export function initScenes10to11(petals, prefersReducedMotion) {
       '/assets/p10-plant-3.webp',
       '/assets/p10-plant-4.webp',
       '/assets/p10-plant-5.webp',
-      '/assets/p10-garland-left.webp',
-      '/assets/p10-garland-right.webp',
+      '/assets/p10-garland-left.webp?v=2',
+      '/assets/p10-garland-right.webp?v=2',
     ].forEach((src) => {
       const pre = new Image();
       pre.src = src;
@@ -183,29 +183,25 @@ export function initScenes10to11(petals, prefersReducedMotion) {
       };
     });
 
-    // Gentle plant sway tweens (2-4 deg, 3-5s cycles; desktop garlands sway 1.5 deg + 1.02 scale)
+    // Gentle plant sway tweens (corner garlands are completely still)
     const plantTweens = [];
     if (!prefersReducedMotion) {
-      const isDesktop = window.innerWidth >= 1024;
       const plantConfigs = [
-        ['.s10-plant-sway--tl', isDesktop ? 1.5 : 2.6, 3.8, 0, isDesktop ? 1.02 : 1],
-        ['.s10-plant-sway--tr', isDesktop ? 1.5 : 2.8, 4.3, 0.4, isDesktop ? 1.02 : 1],
-        ['.s10-plant-sway--window', 3.2, 4.1, 0.2, 1],
-        ['.s10-pot-leaves--left', 2.8, 4.7, 0.6, 1],
-        ['.s10-pot-leaves--right', 3.4, 3.5, 0.3, 1],
-        ['.s10-plant-sway--bl', 2.5, 4.9, 0.5, 1],
-        ['.s10-plant-sway--br', 2.7, 3.3, 0.1, 1],
+        ['.s10-plant-sway--window', 3.2, 4.1, 0.2],
+        ['.s10-pot-leaves--left', 2.8, 4.7, 0.6],
+        ['.s10-pot-leaves--right', 3.4, 3.5, 0.3],
+        ['.s10-plant-sway--bl', 2.5, 4.9, 0.5],
+        ['.s10-plant-sway--br', 2.7, 3.3, 0.1],
       ];
-      plantConfigs.forEach(([sel, deg, dur, delay, scaleVal]) => {
+      plantConfigs.forEach(([sel, deg, dur, delay]) => {
         const el = scene10.querySelector(sel);
         if (!el) return;
         plantTweens.push(
           gsap.fromTo(
             el,
-            { rotation: -deg, scale: scaleVal },
+            { rotation: -deg },
             {
               rotation: deg,
-              scale: scaleVal,
               duration: dur,
               delay,
               ease: 'sine.inOut',
