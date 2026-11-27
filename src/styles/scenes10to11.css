@@ -136,9 +136,9 @@
 
 /* Mobile: one large static garland top-left (behind text), top-right removed */
 .s10-plant--corner-tl {
-  top: 0;
-  left: -3%;
-  width: 62%;
+  top: -2%;
+  left: -16%;
+  width: 52%;
   height: auto;
   z-index: 2;
 }
