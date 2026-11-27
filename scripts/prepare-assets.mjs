@@ -118,6 +118,37 @@ async function cropComponents(srcPath, outDir, prefix, minPixels = 80) {
   }
 }
 
+/**
+ * Extend cloth-red / cloth-white by stretching only a plain middle strip so
+ * borders and flowers remain undistorted and far ends stay off-screen at 45 deg.
+ */
+async function createExtendedCloth(srcPath, destPath, sliceStartFrac, sliceEndFrac, extraMiddlePx = 900) {
+  const { width, height } = await sharp(srcPath).metadata();
+  const sX = Math.round(width * sliceStartFrac);
+  const sW = Math.max(8, Math.round(width * (sliceEndFrac - sliceStartFrac)));
+  const rightX = sX + sW;
+  const rightW = width - rightX;
+
+  const leftPart = await sharp(srcPath).extract({ left: 0, top: 0, width: sX, height }).toBuffer();
+  const midPart = await sharp(srcPath)
+    .extract({ left: sX, top: 0, width: sW, height })
+    .resize(extraMiddlePx, height, { fit: 'fill' })
+    .toBuffer();
+  const rightPart = await sharp(srcPath).extract({ left: rightX, top: 0, width: rightW, height }).toBuffer();
+
+  const totalW = sX + extraMiddlePx + rightW;
+  await sharp({
+    create: { width: totalW, height, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+  })
+    .composite([
+      { input: leftPart, left: 0, top: 0 },
+      { input: midPart, left: sX, top: 0 },
+      { input: rightPart, left: sX + extraMiddlePx, top: 0 },
+    ])
+    .webp({ quality: 88, alphaQuality: 95 })
+    .toFile(destPath);
+}
+
 async function run() {
   const files = fs.readdirSync(ASSETS_DIR);
   for (const file of files) {
@@ -136,6 +167,12 @@ async function run() {
     } else if (file === 'sparkle.png') {
       await cropComponents(src, OUT_SPARKLES, 'star', 20);
       await sharp(src).webp({ quality: 88, alphaQuality: 95 }).toFile(dest);
+    } else if (file === 'cloth-red.png') {
+      await sharp(src).webp({ quality: 86, alphaQuality: 95 }).toFile(dest);
+      await createExtendedCloth(src, path.join(OUT_ASSETS, 'cloth-red-long.webp'), 0.495, 0.512, 950);
+    } else if (file === 'cloth-white.png') {
+      await sharp(src).webp({ quality: 86, alphaQuality: 95 }).toFile(dest);
+      await createExtendedCloth(src, path.join(OUT_ASSETS, 'cloth-white-long.webp'), 0.34, 0.44, 950);
     } else {
       await sharp(src).webp({ quality: 86, alphaQuality: 95 }).toFile(dest);
     }

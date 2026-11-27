@@ -80,13 +80,14 @@ export function initScenes4to9(petals, prefersReducedMotion) {
 
   // Scene 7 & 8 elements
   const s7Bride = scene7.querySelector('.s78-bride-wrap');
-  const s7LeafBack = scene7.querySelector('.s7-leaf--back');
-  const s7LeafFront = scene7.querySelector('.s7-leaf--front');
+  const s7LeafLeft = scene7.querySelector('.s7-leaf-pos--left');
+  const s7LeafRight = scene7.querySelector('.s7-leaf-pos--right');
   const s8Name = scene7.querySelector('.s8-bride-name');
 
   // Scene 9 elements
   const s9ClothRed = scene9.querySelector('.s9-cloth--red');
   const s9ClothWhite = scene9.querySelector('.s9-cloth--white');
+  const s9Grid = scene9.querySelector('.s9-grid');
   const s9Knot = scene9.querySelector('.s9-knot');
   const s9Heading = scene9.querySelector('.s9-heading');
   const s9Families = scene9.querySelectorAll('.s9-groom-family, .s9-bride-family');
@@ -179,58 +180,83 @@ export function initScenes4to9(petals, prefersReducedMotion) {
     .to({}, { duration: 0.55 }, 4.40)
     .to([scene6, familyCorner], { autoAlpha: 0, duration: 0.22 }, 4.95);
 
-  // --- SCENES 7 & 8: Leaf Reveal & Bride Name (5.2 -> 7.6) ---
-  tl.set(scene7, { autoAlpha: 1 }, 5.18)
-    .set(s8Name, { autoAlpha: 0, y: 16 }, 5.18)
-    .from(s7Bride, { scale: 0.72, autoAlpha: 0, duration: 0.35, ease: 'power2.out' }, 5.22)
-    .from([s7LeafBack, s7LeafFront], { autoAlpha: 0, scale: 0.86, duration: 0.25 }, 5.25)
-    // Hold Scene 7 (face covered by two betel leaves)
-    .to({}, { duration: 0.50 }, 5.58)
-    // Scene 8: back leaf moves left, front leaf moves right, bride grows slightly, name appears
-    .to(s7LeafBack, { x: '-115vw', rotation: -24, autoAlpha: 0, duration: 0.42, ease: 'power2.inOut' }, 6.10)
-    .to(s7LeafFront, { x: '115vw', rotation: 24, autoAlpha: 0, duration: 0.42, ease: 'power2.inOut' }, 6.10)
-    .to(s7Bride, { scale: 1.07, duration: 0.42, ease: 'power1.out' }, 6.15)
-    .to(s8Name, { autoAlpha: 1, y: 0, duration: 0.25, ease: 'power2.out' }, 6.45)
+  // --- SCENES 7 & 8: Opaque Entrance -> Mirrored Leaf Reveal (5.25 -> 7.45) ---
+  // Scene 6 is already completely faded out (autoAlpha: 0 at 5.17).
+  // Bride and both leaves appear together as one fully opaque group (never opacity-faded on entrance).
+  tl.set(scene7, { autoAlpha: 1 }, 5.24)
+    .set([s7Bride, s7LeafLeft, s7LeafRight], { opacity: 1 }, 5.24)
+    .set(s8Name, { autoAlpha: 0, y: 16 }, 5.24)
+    .fromTo(
+      s7Bride,
+      { scale: 0.35 },
+      { scale: 1, duration: 0.38, ease: 'power2.out' },
+      5.24
+    )
+    // Hold Scene 7 (face fully hidden by mirrored leaves)
+    .to({}, { duration: 0.42 }, 5.64)
+    // Scene 8: left leaf goes left, right leaf goes right symmetrically (both stay 100% opaque)
+    .to(s7LeafLeft, { x: '-120vw', rotation: -22, duration: 0.45, ease: 'power2.inOut' }, 6.08)
+    .to(s7LeafRight, { x: '120vw', rotation: 22, duration: 0.45, ease: 'power2.inOut' }, 6.08)
+    .to(s7Bride, { scale: 1.07, duration: 0.45, ease: 'power1.out' }, 6.12)
+    .to(s8Name, { autoAlpha: 1, y: 0, duration: 0.25, ease: 'power2.out' }, 6.42)
     // Hold Scene 8
-    .to({}, { duration: 0.55 }, 6.72)
-    .to(scene7, { autoAlpha: 0, duration: 0.22 }, 7.30);
+    .to({}, { duration: 0.50 }, 6.70)
+    .to(scene7, { autoAlpha: 0, duration: 0.22 }, 7.22);
 
-  // --- SCENE 9: Cloth Knot, Heading & Family Boxes (7.5 -> 9.8) ---
-  tl.set(scene9, { autoAlpha: 1 }, 7.50)
-    .set([s9Knot, s9Heading, ...s9Families, ...s9Boxes], { autoAlpha: 0 }, 7.50)
+  // --- SCENE 9: 45° Long Cloths -> Large Knot -> Shrink -> Heading, Families & Boxes (7.48 -> 10.2) ---
+  const isMobile = window.innerWidth < 1024;
+  const s9OverflowY = isMobile
+    ? Math.max(0, s9Grid.scrollHeight - window.innerHeight + 28)
+    : 0;
+
+  tl.set(scene9, { autoAlpha: 1 }, 7.46)
+    .set(s9Grid, { y: 0 }, 7.46)
+    .set([s9Knot, s9Heading, ...s9Families, ...s9Boxes], { autoAlpha: 0 }, 7.46)
+    // Cloths enter along 45° axes from upper-left & upper-right, far ends off-screen
     .fromTo(
       s9ClothRed,
-      { x: '-65vw', autoAlpha: 0 },
-      { x: '-12%', autoAlpha: 1, duration: 0.42, ease: 'power2.out' },
-      7.55
+      { x: '-100%', opacity: 1 },
+      { x: '-44%', opacity: 1, duration: 0.45, ease: 'power2.out' },
+      7.48
     )
     .fromTo(
       s9ClothWhite,
-      { x: '65vw', autoAlpha: 0 },
-      { x: '12%', autoAlpha: 1, duration: 0.42, ease: 'power2.out' },
-      7.55
+      { x: '100%', opacity: 1 },
+      { x: '44%', opacity: 1, duration: 0.45, ease: 'power2.out' },
+      7.48
     )
-    // Meet at center -> cross-fade to knot
-    .to([s9ClothRed, s9ClothWhite], { x: 0, autoAlpha: 0, duration: 0.18, ease: 'power1.in' }, 7.98)
+    // Leading ends meet at center -> smooth cross-fade into large knot
+    .to([s9ClothRed, s9ClothWhite], { opacity: 0, duration: 0.16, ease: 'power1.in' }, 7.95)
     .fromTo(
       s9Knot,
-      { scale: 0.85, autoAlpha: 0 },
-      { scale: 1, autoAlpha: 1, duration: 0.22, ease: 'back.out(1.4)' },
-      8.02
+      { scale: 1.65, y: isMobile ? 0 : 0, autoAlpha: 0 },
+      { scale: 1.65, autoAlpha: 1, duration: 0.18, ease: 'power1.out' },
+      7.95
     )
-    .fromTo(s9Heading, { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.2 }, 8.22)
+    // Hold large knot briefly, then shrink into final position
+    .to({}, { duration: 0.25 }, 8.14)
+    .to(s9Knot, { scale: 1, duration: 0.35, ease: 'power2.inOut' }, 8.40)
+    // Heading, then families & boxes
+    .fromTo(s9Heading, { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.2 }, 8.68)
     .fromTo(
       s9Families,
       { y: 16, autoAlpha: 0 },
       { y: 0, autoAlpha: 1, stagger: 0.08, duration: 0.24, ease: 'power2.out' },
-      8.40
+      8.84
     )
     .fromTo(
       s9Boxes,
       { y: 18, autoAlpha: 0 },
       { y: 0, autoAlpha: 1, stagger: 0.1, duration: 0.26, ease: 'power2.out' },
-      8.52
-    )
-    // Hold Scene 9 to read both boxes
-    .to({}, { duration: 1.0 }, 8.80);
+      8.94
+    );
+
+  // On small phones, if content exceeds 100svh, pan upward smoothly (groom first, then bride)
+  if (s9OverflowY > 0) {
+    tl.to({}, { duration: 0.35 }, 9.22)
+      .to(s9Grid, { y: -s9OverflowY, duration: 0.55, ease: 'sine.inOut' }, 9.57)
+      .to({}, { duration: 0.35 }, 10.12);
+  } else {
+    tl.to({}, { duration: 0.85 }, 9.22);
+  }
 }

@@ -194,8 +194,12 @@
           <div class="scene__inner scene78-stage">
             <div class="s78-bride-wrap">
               <img src="/assets/bride.webp" alt="কল্যাণীয়া ঐন্দ্রিলা ব্যানার্জ্জী" class="s78-bride-img" loading="lazy" />
-              <img src="/assets/leaf-cover.webp" alt="" class="s7-leaf s7-leaf--back" loading="lazy" />
-              <img src="/assets/leaf-cover.webp" alt="" class="s7-leaf s7-leaf--front" loading="lazy" />
+              <div class="s7-leaf-pos s7-leaf-pos--left">
+                <img src="/assets/leaf-cover.webp" alt="" class="s7-leaf s7-leaf--left" loading="lazy" />
+              </div>
+              <div class="s7-leaf-pos s7-leaf-pos--right">
+                <img src="/assets/leaf-cover.webp" alt="" class="s7-leaf s7-leaf--right" loading="lazy" />
+              </div>
             </div>
             <h2 class="s8-bride-name">কল্যাণীয়া ঐন্দ্রিলা <br />ব্যানার্জ্জী</h2>
           </div>
@@ -205,10 +209,14 @@
         <!-- Scene 9: Cloth Knot, Heading & Family Info Boxes -->
         <article id="scene-9" class="scene scene--9" data-scene="9">
           <div class="scene__inner scene9-stage">
-            <!-- Cloth meeting animation layer -->
+            <!-- Diagonal 45° continuous cloth meeting animation layer -->
             <div class="s9-cloths" aria-hidden="true">
-              <img src="/assets/cloth-red.webp" alt="" class="s9-cloth s9-cloth--red" loading="lazy" />
-              <img src="/assets/cloth-white.webp" alt="" class="s9-cloth s9-cloth--white" loading="lazy" />
+              <div class="s9-cloth-wrap s9-cloth-wrap--red">
+                <img src="/assets/cloth-red-long.webp" alt="" class="s9-cloth s9-cloth--red" loading="lazy" />
+              </div>
+              <div class="s9-cloth-wrap s9-cloth-wrap--white">
+                <img src="/assets/cloth-white-long.webp" alt="" class="s9-cloth s9-cloth--white" loading="lazy" />
+              </div>
             </div>
 
             <div class="s9-grid">
@@ -222,10 +230,13 @@
                 <img src="/assets/topor.webp" alt="" class="s9-crown s9-crown--topor" loading="lazy" />
                 <div class="s9-box s9-box--groom">
                   <p class="s9-box__lead" data-i18n="s9.groomLead">কল্যাণীয় পবিত্রার্ঘ্য চক্রবর্তী</p>
-                  <p data-i18n="s9.groomFather">পিতা : শ্রী পঙ্কজ চক্রবর্তী</p>
-                  <p data-i18n="s9.groomMother">মাতা : শ্রীমতী অনুশ্রী চক্রবর্তী</p>
-                  <p data-i18n="s9.groomBrother">ভাই : অভ্রনীল চক্রবর্তী</p>
-                  <p data-i18n="s9.groomAddr">ঠিকানা : স্থান- অনুর বাড়ি, মণিরামপুর, ডাকঘর- মণিরামপুর, জেলা- হুগলি, পিন- ৭১২৩০৪</p>
+                  <div class="s9-divider" aria-hidden="true"></div>
+                  <p><span class="s9-label" data-i18n="s9.fatherLabel">পিতা :</span> <span class="s9-val" data-i18n="s9.groomFatherVal">শ্রী পঙ্কজ চক্রবর্তী</span></p>
+                  <p><span class="s9-label" data-i18n="s9.motherLabel">মাতা :</span> <span class="s9-val" data-i18n="s9.groomMotherVal">শ্রীমতী অনুশ্রী চক্রবর্তী</span></p>
+                  <p><span class="s9-label" data-i18n="s9.brotherLabel">ভাই :</span> <span class="s9-val" data-i18n="s9.groomBrotherVal">অভ্রনীল চক্রবর্তী</span></p>
+                  <div class="s9-addr-panel">
+                    <span class="s9-label" data-i18n="s9.addrLabel">ঠিকানা :</span> <span class="s9-val" data-i18n="s9.groomAddrVal">স্থান- অনুর বাড়ি, মণিরামপুর, ডাকঘর- মণিরামপুর, জেলা- হুগলি, পিন- ৭১২৩০৪</span>
+                  </div>
                 </div>
               </div>
 
@@ -240,9 +251,12 @@
                 <img src="/assets/mukut.webp" alt="" class="s9-crown s9-crown--mukut" loading="lazy" />
                 <div class="s9-box s9-box--bride">
                   <p class="s9-box__lead" data-i18n="s9.brideLead">কল্যাণীয়া ঐন্দ্রিলা ব্যানার্জ্জী</p>
-                  <p data-i18n="s9.brideFather">পিতা : শ্রী রবি শঙ্কর ব্যানার্জ্জী</p>
-                  <p data-i18n="s9.brideMother">মাতা : শ্রীমতী বাণী ব্যানার্জ্জী</p>
-                  <p data-i18n="s9.brideAddr">ঠিকানা : গ্রাম- হাঁসনান, ডাকঘর- মাকালপুর, থানা- দাদপুর, জেলা- হুগলি, পিন- ৭১২৩০৫</p>
+                  <div class="s9-divider" aria-hidden="true"></div>
+                  <p><span class="s9-label" data-i18n="s9.fatherLabel">পিতা :</span> <span class="s9-val" data-i18n="s9.brideFatherVal">শ্রী রবি শঙ্কর ব্যানার্জ্জী</span></p>
+                  <p><span class="s9-label" data-i18n="s9.motherLabel">মাতা :</span> <span class="s9-val" data-i18n="s9.brideMotherVal">শ্রীমতী বাণী ব্যানার্জ্জী</span></p>
+                  <div class="s9-addr-panel">
+                    <span class="s9-label" data-i18n="s9.addrLabel">ঠিকানা :</span> <span class="s9-val" data-i18n="s9.brideAddrVal">গ্রাম- হাঁসনান, ডাকঘর- মাকালপুর, থানা- দাদপুর, জেলা- হুগলি, পিন- ৭১২৩০৫</span>
+                  </div>
                 </div>
               </div>
 

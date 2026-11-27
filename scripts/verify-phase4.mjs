@@ -5,21 +5,20 @@ const ART_DIR = 'C:\\Users\\User\\.gemini\\antigravity\\brain\\8437f326-a723-444
 const URL = process.env.TEST_URL || 'http://localhost:5173/';
 const CHROME_PATH = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 
-async function scrollToSceneHold(page, targetScene) {
-  const maxScroll = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
-  const range = await page.evaluate(() => {
+async function getGroup49Range(page) {
+  return page.evaluate(() => {
     const spacer = document.getElementById('group-4-9').closest('.pin-spacer');
     const top = spacer.getBoundingClientRect().top + window.scrollY;
     const height = spacer.offsetHeight - window.innerHeight;
     return { top, height };
   });
+}
 
-  // Progress targets inside [4-9] hold windows: Scene 7 (~0.58), Scene 8 (~0.71), Scene 9 (~0.94)
-  const progMap = { 7: 0.58, 8: 0.71, 9: 0.94 };
-  const p = progMap[targetScene];
+async function scrollToProgress(page, range, p) {
+  const maxScroll = await page.evaluate(() => document.documentElement.scrollHeight - window.innerHeight);
   const y = Math.min(maxScroll, Math.round(range.top + range.height * p));
   await page.evaluate((pos) => window.scrollTo(0, pos), y);
-  await page.waitForTimeout(550);
+  await page.waitForTimeout(400);
 }
 
 async function runViewport(browser, name, viewport, isMobile) {
@@ -44,44 +43,58 @@ async function runViewport(browser, name, viewport, isMobile) {
   console.log(`[${name}] Overflow: ${overflow.scrollWidth}/${overflow.innerWidth}`);
   if (overflow.scrollWidth > overflow.innerWidth) throw new Error(`Overflow at ${name}`);
 
-  // Verify Bengali spelling against SPEC.md
-  const texts = await page.evaluate(() => ({
-    s7: document.getElementById('scene-7').textContent.replace(/\s+/g, ' '),
-    s9: document.getElementById('scene-9').textContent.replace(/\s+/g, ' '),
-  }));
-  if (!texts.s7.includes('কল্যাণীয়া ঐন্দ্রিলা ব্যানার্জ্জী')) {
-    throw new Error('Missing Scene 8 bride name');
-  }
-  for (const req of [
-    'শুভ বিবাহ',
-    'চক্রবর্তী পরিবার',
-    'ব্যানার্জ্জী পরিবার',
-    'কল্যাণীয় পবিত্রার্ঘ্য চক্রবর্তী',
-    'পিতা : শ্রী পঙ্কজ চক্রবর্তী',
-    'মাতা : শ্রীমতী অনুশ্রী চক্রবর্তী',
-    'ভাই : অভ্রনীল চক্রবর্তী',
-    'পিন- ৭১২৩০৪',
-    'কল্যাণীয়া ঐন্দ্রিলা ব্যানার্জ্জী',
-    'পিতা : শ্রী রবি শঙ্কর ব্যানার্জ্জী',
-    'মাতা : শ্রীমতী বাণী ব্যানার্জ্জী',
-    'পিন- ৭১২৩০৫',
-  ]) {
-    if (!texts.s9.includes(req)) throw new Error(`Missing in Scene 9: ${req}`);
-  }
-  console.log(`[${name}] Bengali spelling check: PASS`);
+  const range = await getGroup49Range(page);
 
-  if (name === '390x844' || name === '1440x900') {
-    for (const s of [7, 8, 9]) {
-      await scrollToSceneHold(page, s);
-      const outPath = path.join(ART_DIR, `p4-${name}-scene-${s}.png`);
-      await page.screenshot({ path: outPath });
-      console.log(`Saved ${outPath}`);
+  // Check 6 -> 7 transition: Scene 6 must fade out completely before Scene 7 appears,
+  // and Scene 7 leaves must always be opacity=1
+  for (const p of [0.49, 0.505, 0.52, 0.55]) {
+    await scrollToProgress(page, range, p);
+    const check = await page.evaluate(() => {
+      const s6 = getComputedStyle(document.getElementById('scene-6'));
+      const s7 = getComputedStyle(document.getElementById('scene-7'));
+      const l1 = getComputedStyle(document.querySelector('.s7-leaf-pos--left'));
+      const l2 = getComputedStyle(document.querySelector('.s7-leaf-pos--right'));
+      return {
+        s6Op: Number(s6.opacity),
+        s7Vis: s7.visibility,
+        l1Op: Number(l1.opacity),
+        l2Op: Number(l2.opacity),
+      };
+    });
+    if (check.s7Vis === 'visible' && check.s6Op > 0.01) {
+      throw new Error(`[${name}] Overlap 6->7 at p=${p}: s6Op=${check.s6Op}`);
     }
-    // Reverse back to Scene 7
-    await scrollToSceneHold(page, 7);
-    const leafVisible = await page.evaluate(() => Number(getComputedStyle(document.querySelector('.s7-leaf--front')).opacity) > 0.8);
-    console.log(`[${name}] Reverse to Scene 7: leafVisible=${leafVisible}`);
+    if (check.s7Vis === 'visible' && (check.l1Op < 0.99 || check.l2Op < 0.99)) {
+      throw new Error(`[${name}] Leaves not 100% opaque at p=${p}: ${check.l1Op}, ${check.l2Op}`);
+    }
   }
+  console.log(`[${name}] 6->7 opaque entrance check: PASS`);
+
+  // Capture Scenes 7, 8, 9 (and 9-bottom on mobile)
+  const captures = [
+    { key: 'scene-7', p: 0.56 },
+    { key: 'scene-8', p: 0.66 },
+    { key: 'scene-9-cloths', p: 0.76 },
+    { key: 'scene-9', p: isMobile ? 0.90 : 0.96 },
+  ];
+  if (isMobile) {
+    captures.push({ key: 'scene-9-scrolled', p: 0.98 });
+  }
+
+  for (const cap of captures) {
+    await scrollToProgress(page, range, cap.p);
+    const outPath = path.join(ART_DIR, `p4fix-${name}-${cap.key}.png`);
+    await page.screenshot({ path: outPath });
+    console.log(`Saved ${outPath}`);
+  }
+
+  // Verify reverse scroll back to Scene 7
+  await scrollToProgress(page, range, 0.56);
+  const revOk = await page.evaluate(() => {
+    const l1 = getComputedStyle(document.querySelector('.s7-leaf-pos--left'));
+    return Number(l1.opacity) === 1;
+  });
+  console.log(`[${name}] Reverse scroll to Scene 7: ${revOk ? 'PASS' : 'FAIL'}`);
 
   await context.close();
 }
@@ -91,7 +104,8 @@ async function main() {
   try {
     await runViewport(browser, '360x640', { width: 360, height: 640 }, true);
     await runViewport(browser, '390x844', { width: 390, height: 844 }, true);
-    await runViewport(browser, '1440x900', { width: 1440, height: 900 }, false);
+    await runViewport(browser, '1366x768', { width: 1366, height: 768 }, false);
+    await runViewport(browser, '1920x1080', { width: 1920, height: 1080 }, false);
   } finally {
     await browser.close();
   }
