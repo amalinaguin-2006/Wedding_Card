@@ -6,7 +6,7 @@ import '../styles/scenes10to11.css';
  * Draw an image onto a canvas using a weighted triangle mesh warp.
  * Only vertices where weightFn(u, v) > 0 move; zero-weight regions (face, body, hands, jewellery, pots, wall, window, road) stay 100% still.
  */
-function createWeightedMeshWarp(canvas, imgSrc, cols, rows, weightFn) {
+function createWeightedMeshWarp(canvas, imgSrc, cols, rows, weightFn, pad = { left: 20, top: 20, right: 60, bottom: 60 }) {
   if (!canvas) return { start: () => {}, stop: () => {} };
   const ctx = canvas.getContext('2d');
   const img = new Image();
@@ -16,13 +16,13 @@ function createWeightedMeshWarp(canvas, imgSrc, cols, rows, weightFn) {
 
   const drawFrame = (t) => {
     if (!loaded) return;
-    const cw = canvas.width;
-    const ch = canvas.height;
+    const cw = canvas.width - pad.left - pad.right;
+    const ch = canvas.height - pad.top - pad.bottom;
     const iw = img.naturalWidth;
     const ih = img.naturalHeight;
-    if (!iw || !ih) return;
+    if (!iw || !ih || cw <= 0 || ch <= 0) return;
 
-    // Cover-fit source crop so aspect ratio matches canvas
+    // Cover-fit source crop so aspect ratio matches inner bride area
     const cRatio = cw / ch;
     const iRatio = iw / ih;
     let sx = 0, sy = 0, sw = iw, sh = ih;
@@ -34,9 +34,9 @@ function createWeightedMeshWarp(canvas, imgSrc, cols, rows, weightFn) {
       sy = (ih - sh) * 0.5;
     }
 
-    ctx.clearRect(0, 0, cw, ch);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Precompute displaced vertices
+    // Precompute displaced vertices (offset by pad.left/pad.top so tips never clip at canvas edges)
     const pts = [];
     for (let r = 0; r <= rows; r++) {
       const v = r / rows;
@@ -47,8 +47,8 @@ function createWeightedMeshWarp(canvas, imgSrc, cols, rows, weightFn) {
         rowPts.push({
           sx: sx + u * sw,
           sy: sy + v * sh,
-          dx: u * cw + wx,
-          dy: v * ch + wy,
+          dx: pad.left + u * cw + wx,
+          dy: pad.top + v * ch + wy,
         });
       }
       pts.push(rowPts);
@@ -125,7 +125,7 @@ const smoothstep = (e0, e1, x) => {
 
 /**
  * Scenes 10 & 11:
- * - Scene 10: Time-based 5s motorbike entry with rotating masked wheels, weighted mesh warp for hair/saree & leaf tips
+ * - Scene 10: Time-based 2.8s motorbike entry (bike-body over two rotating bike-wheel copies), weighted mesh warp for hair & saree
  * - Scene 11: Heading, then two 90°-rotated paper scrolls unrolling sequentially from center outward (petals active)
  */
 export function initScenes10to11(petals, prefersReducedMotion) {
@@ -134,27 +134,54 @@ export function initScenes10to11(petals, prefersReducedMotion) {
 
   // --- SCENE 10 ---
   if (scene10) {
+    // Preload Scene 10 assets so entry begins immediately with zero delay
+    ['/assets/p10-bride.webp', '/assets/bike-body.webp', '/assets/bike-wheel.webp'].forEach((src) => {
+      const pre = new Image();
+      pre.src = src;
+    });
+
     const brideCanvas = scene10.querySelector('.s10-bride-canvas');
     const groomWrap = scene10.querySelector('.s10-groom-wrap');
     const chassis = scene10.querySelector('.s10-bike-chassis');
-    const wheels = scene10.querySelectorAll('.s10-wheel');
+    const rearWheel = scene10.querySelector('.s10-wheel--rear');
+    const frontWheel = scene10.querySelector('.s10-wheel--front');
+    const wheels = [rearWheel, frontWheel].filter(Boolean);
     const titleBlock = scene10.querySelector('.s10-title-block');
     const detailsBlock = scene10.querySelector('.s10-details-block');
 
-    // Weighted mesh warp for Bride (572x436): ONLY outer hair ends & saree trail wave; face, body, hands, jewellery stay still
-    const brideWarp = createWeightedMeshWarp(brideCanvas, '/assets/p10-bride.webp', 22, 18, (u, v, t) => {
+    // Weighted mesh warp for Bride (572x436 inside 652x516 padded canvas):
+    // ~2s cycle with slightly different timing for hair (1.95s) and saree (2.18s).
+    // Hair tips move ~8px and saree trail ~14px at 390px phone width, scaling up on desktop.
+    const brideWarp = createWeightedMeshWarp(brideCanvas, '/assets/p10-bride.webp', 28, 22, (u, v, t) => {
       if (t === 0) return { wx: 0, wy: 0 };
-      const hairWeight = smoothstep(0.28, 0.42, u) * (1 - smoothstep(0.46, 0.54, u)) * smoothstep(0.56, 0.88, v);
-      const sareeWeight = smoothstep(0.45, 0.72, u) * smoothstep(0.42, 0.78, v);
-      const w = Math.max(hairWeight, sareeWeight);
-      if (w <= 0) return { wx: 0, wy: 0 };
+      const hairWeight = smoothstep(0.27, 0.41, u) * (1 - smoothstep(0.46, 0.54, u)) * smoothstep(0.54, 0.88, v);
+      const sareeWeight = smoothstep(0.46, 0.86, u) * smoothstep(0.42, 0.84, v);
+      if (hairWeight <= 0 && sareeWeight <= 0) return { wx: 0, wy: 0 };
+
+      const hairOmega = (Math.PI * 2) / 1.95;
+      const sareeOmega = (Math.PI * 2) / 2.18;
+
+      const hx = hairWeight * Math.sin(t * hairOmega + v * 4.5 + u * 2.0) * 18.0;
+      const hy = hairWeight * Math.cos(t * hairOmega + u * 4.0) * 12.0;
+
+      const sx = sareeWeight * Math.sin(t * sareeOmega + u * 4.0 + v * 2.5) * 34.0;
+      const sy = sareeWeight * Math.cos(t * sareeOmega + u * 3.5) * 19.0;
+
       return {
-        wx: w * Math.sin(t * 1.5 + v * 5.0 + u * 2.0) * 5.0,
-        wy: w * Math.cos(t * 1.25 + u * 4.5) * 3.5,
+        wx: hx + sx,
+        wy: hy + sy,
       };
     });
 
-    // Time-based 5s Groom Entry + Wheel Rotation + Engine Bounce + Post-Stop Text Reveal
+    const getWheelRotationDeg = (wheelEl) => {
+      const travelPx = window.innerWidth * 1.15;
+      const wheelDiameter = wheelEl?.getBoundingClientRect().width || 80;
+      const rawDeg = (travelPx / (Math.PI * wheelDiameter)) * 360;
+      // For power2.out over 2.8s, peak slope is 2x average speed -> 756deg caps peak speed at 1.5 turns/sec
+      return Math.min(rawDeg, 756);
+    };
+
+    // Time-based 2.8s Groom Entry + Clockwise Wheel Rotation + Engine Bounce + Post-Stop Text Reveal
     let entryTl = null;
     let bounceTween = null;
 
@@ -174,7 +201,7 @@ export function initScenes10to11(petals, prefersReducedMotion) {
 
     if (!prefersReducedMotion) {
       bounceTween = gsap.to(chassis, {
-        y: -1.8,
+        y: -1.5,
         duration: 0.14,
         ease: 'sine.inOut',
         yoyo: true,
@@ -194,26 +221,32 @@ export function initScenes10to11(petals, prefersReducedMotion) {
         .fromTo(
           groomWrap,
           { x: '-115vw' },
-          { x: 0, duration: 4.8, ease: 'power2.out' },
+          { x: 0, duration: 2.8, ease: 'power2.out' },
           0
         )
         .fromTo(
-          wheels,
+          rearWheel,
           { rotation: 0 },
-          { rotation: 1080, duration: 4.8, ease: 'power2.out' },
+          { rotation: () => getWheelRotationDeg(rearWheel), duration: 2.8, ease: 'power2.out' },
+          0
+        )
+        .fromTo(
+          frontWheel,
+          { rotation: 0 },
+          { rotation: () => getWheelRotationDeg(frontWheel), duration: 2.8, ease: 'power2.out' },
           0
         )
         .fromTo(
           titleBlock,
           { autoAlpha: 0, y: 14 },
-          { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power2.out' },
-          4.82
+          { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' },
+          2.65
         )
         .fromTo(
           detailsBlock,
           { autoAlpha: 0, y: 14 },
-          { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power2.out' },
-          5.02
+          { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' },
+          2.8
         );
     }
 
@@ -229,23 +262,23 @@ export function initScenes10to11(petals, prefersReducedMotion) {
       },
     });
 
-    // Entry trigger: begins ONLY when Scene 10 is almost fully in view; replays only after leaving & returning
+    // Entry trigger: begins as soon as Scene 10 is ~60% visible; replays only after leaving & returning
     ScrollTrigger.create({
       trigger: scene10,
-      start: 'top 18%',
-      end: 'bottom 18%',
+      start: 'top 40%',
+      end: 'bottom 60%',
       onEnter: () => {
         if (!prefersReducedMotion) {
           brideWarp.start();
           bounceTween?.restart();
-          entryTl?.restart();
+          entryTl?.invalidate().restart();
         }
       },
       onEnterBack: () => {
         if (!prefersReducedMotion) {
           brideWarp.start();
           bounceTween?.restart();
-          entryTl?.restart();
+          entryTl?.invalidate().restart();
         }
       },
       onLeave: () => {

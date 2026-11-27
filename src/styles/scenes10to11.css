@@ -38,8 +38,10 @@
 
 .s10-bride-canvas {
   display: block;
-  width: 100%;
+  width: 113.986%;
   height: auto;
+  margin-left: -3.4965%;
+  margin-top: -3.4965%;
 }
 
 .s10-groom-wrap {
@@ -60,59 +62,45 @@
   will-change: transform;
 }
 
-.s10-groom-bike {
+.s10-bike-body {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
+  z-index: 2;
   pointer-events: none;
   user-select: none;
 }
 
-/* Layer 1: Base bike with full wheel circles punched out */
-.s10-groom-bike--body {
+.s10-wheel-slot {
+  position: absolute;
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
   z-index: 1;
-  -webkit-mask-image:
-    radial-gradient(ellipse 9.2% 16.5% at 19.43% 80.70%, transparent 96%, #000 100%),
-    radial-gradient(ellipse 9.5% 17.0% at 50.90% 81.64%, transparent 96%, #000 100%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    radial-gradient(ellipse 9.2% 16.5% at 19.43% 80.70%, transparent 96%, #000 100%),
-    radial-gradient(ellipse 9.5% 17.0% at 50.90% 81.64%, transparent 96%, #000 100%);
-  mask-composite: intersect;
+  pointer-events: none;
+  user-select: none;
 }
 
-/* Layer 2: Rotating wheels only (spokes, rim, tyre) */
+.s10-wheel-slot--rear {
+  left: 16.92%;
+  top: 80.75%;
+  width: 17.52%;
+}
+
+.s10-wheel-slot--front {
+  left: 52.57%;
+  top: 81.50%;
+  width: 18.54%;
+}
+
 .s10-wheel {
-  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform-origin: 50% 50%;
   will-change: transform;
-}
-
-.s10-wheel--rear {
-  clip-path: circle(11.4% at 19.43% 80.70%);
-  transform-origin: 19.43% 80.70%;
-}
-
-.s10-wheel--front {
-  clip-path: circle(11.8% at 50.90% 81.64%);
-  transform-origin: 50.90% 81.64%;
-}
-
-/* Layer 3: Static foreground (silencer, shock absorber, fender, chain/swingarm, rider's foot, front fork & brake) */
-.s10-bike-fg {
-  z-index: 3;
-}
-
-.s10-bike-fg--rear {
-  clip-path: polygon(
-    6% 62%, 28% 62%, 32% 75%, 32% 87%, 7% 87%, 7% 77%,
-    17% 77%, 17% 70%, 6% 70%
-  );
-}
-
-.s10-bike-fg--front {
-  clip-path: polygon(45% 63%, 51.5% 63%, 53.5% 83.5%, 48% 84.5%, 46% 74%);
 }
 
 .s10-text-layer {
